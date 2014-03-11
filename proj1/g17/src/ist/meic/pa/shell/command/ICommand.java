@@ -1,8 +1,10 @@
 package ist.meic.pa.shell.command;
 
+import ist.meic.pa.shell.Shell;
+
 public interface ICommand {
 
-    void execute();
+    void execute(Shell shell);
 
     void undo();
 

@@ -3,26 +3,23 @@ package ist.meic.pa.shell.command;
 import ist.meic.pa.Inspector;
 import ist.meic.pa.shell.Shell;
 
-public class ClassCommand implements ICommand {
+public class SetCommand implements ICommand {
 
     private String arg;
     private Object object;
 
-    public ClassCommand(String arg) {
+    public SetCommand(String arg) {
         this.arg = arg;
     }
 
     public void execute(Shell shell) {
-        Inspector inspector = new Inspector();
-        object = inspector.getInstance(arg);
+    	this.setObject(arg, this.getLatestObject());
+
+        System.out.println("Saved name for object of type: " + object.getClass().getName());
     }
 
     public void undo() {
 
-    }
-
-    public Object getResult() {
-        return object;
     }
 
 }

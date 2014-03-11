@@ -10,6 +10,18 @@ public class Shell {
 
     private TreeMap<String, Object> objects = new TreeMap<String, Object>();
     private Object object;
+    
+    public void putObject(String name, Object o) {
+    	objects.put(name, o);
+    }
+
+    public Object getObject(String name) {
+    	return objects.get(name);
+    }
+
+    public Object getLatestObject() {
+    	return object;
+    }
 
     public void run() {
 
@@ -25,7 +37,7 @@ public class Shell {
                 switch (shellCommand) {
                     case CLASS:
                         ClassCommand command = new ClassCommand(parts[1]);
-                        command.execute();
+                        command.execute(this);
                         object = command.getResult();
                         break;
                     case GET:
@@ -50,6 +62,8 @@ public class Shell {
 //                    e.printStackTrace();
 //                }
             }
+            
+            scanner.close();
         }
     }
 
