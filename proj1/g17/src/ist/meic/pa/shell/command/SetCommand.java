@@ -1,6 +1,5 @@
 package ist.meic.pa.shell.command;
 
-import ist.meic.pa.Inspector;
 import ist.meic.pa.shell.Shell;
 
 public class SetCommand implements ICommand {
@@ -13,7 +12,8 @@ public class SetCommand implements ICommand {
     }
 
     public void execute(Shell shell) {
-    	this.setObject(arg, this.getLatestObject());
+        object = shell.getLatestObject();
+        shell.putObject(arg, object);
 
         System.out.println("Saved name for object of type: " + object.getClass().getName());
     }
