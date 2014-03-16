@@ -1,12 +1,12 @@
 package ist.meic.pa;
 
-import ist.meic.pa.shell.Shell;
+import a.B;
 
 public class App {
 
-    public static void main(String[] args) {
-        Shell shell = new Shell();
-        shell.run();
+    public static void main(String[] args) throws IllegalAccessException {
+        B b = new B();
+        new Inspector().inspect(b);
     }
 
 }

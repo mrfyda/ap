@@ -34,7 +34,7 @@ public class Shell {
     public void run() {
 
         while (true) {
-            System.out.print("Command:> ");
+            System.err.print("> ");
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
             String[] parts = line.split(" ");
@@ -60,7 +60,7 @@ public class Shell {
                         break;
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Unknown command: " + parts[0]);
+                System.err.println("Unknown command: " + parts[0]);
 
 //                try {
 //                    Class<?>[] params = {};

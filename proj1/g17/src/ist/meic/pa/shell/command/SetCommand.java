@@ -15,7 +15,7 @@ public class SetCommand implements ICommand {
         object = shell.getLatestObject();
         shell.putObject(arg, object);
 
-        System.out.println("Saved name for object of type: " + object.getClass().getName());
+        System.err.println("Saved name for object of type: " + object.getClass().getName());
     }
 
     public void undo() {
