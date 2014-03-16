@@ -42,27 +42,33 @@ public class Shell {
             String[] parts = line.split(" ");
 
             String commandName = parts[0];
-            
-            try {
-                String commandPackage = "ist.meic.pa.shell.command." + commandName;
-                Class<?> commandClass = Class.forName(commandPackage);
-                Class[] constructorParamTypes = new Class[]{String[].class};
-                Constructor<?> commandConstructor =
-                        commandClass.getConstructor(constructorParamTypes);
+            String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
-                Object[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
-                Object[] constructorParams = new Object[]{commandArgs};
-                ICommand command = (ICommand) commandConstructor.newInstance(constructorParams);
-                command.execute(this);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Unknown command");
-            } catch (Exception e) {
-                System.err.println("This is weird, how did you get here?");
-                e.printStackTrace();
-            }
+            ICommand command = getCommandForName(commandName, commandArgs);
+            command.execute(this);
         }
 
         //scanner.close();
+    }
+
+    private ICommand getCommandForName(String commandName, Object[] commandArgs) {
+        try {
+            String commandPackage = "ist.meic.pa.shell.command." + commandName;
+            Class<?> commandClass = Class.forName(commandPackage);
+            Class[] constructorParamTypes = new Class[]{String[].class};
+            Constructor<?> commandConstructor =
+                    commandClass.getConstructor(constructorParamTypes);
+
+            Object[] constructorParams = new Object[]{commandArgs};
+            return (ICommand) commandConstructor.newInstance(constructorParams);
+        } catch (ClassNotFoundException e) {
+            System.err.println("Unknown command");
+        } catch (Exception e) {
+            System.err.println("This is weird, how did you get here?");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }

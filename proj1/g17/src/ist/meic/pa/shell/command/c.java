@@ -37,7 +37,7 @@ public class c implements ICommand {
             Method method = object.getClass().getDeclaredMethod(methodName, cArgs);
             method.setAccessible(true);
 
-            Integer[] params = new Integer[argsNumber];
+            Object[] params = new Integer[argsNumber];
             for (int i = 0; i < params.length; i++) {
                 params[i] = Integer.parseInt(methodArgs[i]);
             }
