@@ -45,7 +45,9 @@ public class Shell {
             String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
             ICommand command = getCommandForName(commandName, commandArgs);
-            command.execute(this);
+            if (command != null) {
+                command.execute(this);
+            }
         }
 
         //scanner.close();

@@ -10,6 +10,7 @@ public class c implements ICommand {
     private final static Integer NUM_PARAMS = 1;
 
     private String methodName;
+
     private String[] methodArgs;
 
     public c(String[] args) {
@@ -37,9 +38,12 @@ public class c implements ICommand {
             Method method = object.getClass().getDeclaredMethod(methodName, cArgs);
             method.setAccessible(true);
 
-            Object[] params = new Integer[argsNumber];
-            for (int i = 0; i < params.length; i++) {
-                params[i] = Integer.parseInt(methodArgs[i]);
+            Object[] params = null;
+            if (argsNumber > 0) {
+                params = new Integer[argsNumber];
+                for (int i = 0; i < params.length; i++) {
+                    params[i] = Integer.parseInt(methodArgs[i]);
+                }
             }
 
             String output = method.invoke(object, params).toString();
