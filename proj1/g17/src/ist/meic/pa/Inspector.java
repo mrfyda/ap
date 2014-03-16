@@ -12,7 +12,7 @@ public class Inspector {
         System.err.println("----------");
         printFields(object);
 
-        Shell shell = new Shell();
+        Shell shell = new Shell(object);
         shell.run();
     }
 
