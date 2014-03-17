@@ -10,10 +10,10 @@ import java.util.TreeMap;
 
 public class Shell {
     private TreeMap<String, Object> objects = new TreeMap<String, Object>();
-    private Object object;
+    private Object latestObject;
 
     public Shell(Object object) {
-        this.object = object;
+        this.latestObject = object;
     }
 
     public void putObject(String name, Object o) {
@@ -25,12 +25,11 @@ public class Shell {
     }
 
     public void setLatestObject(Object o) {
-        object = o;
+        latestObject = o;
     }
 
     public Object getLatestObject() {
-
-        return object;
+        return latestObject;
     }
 
     public void run() {
@@ -60,16 +59,16 @@ public class Shell {
 
     private ICommand getCommandForName(String commandName, Object[] commandArgs) {
         try {
-            String commandPackage = "ist.meic.pa.shell.command." + commandName;
-            Class<?> commandClass = Class.forName(commandPackage);
+            String commandQualifiedName = ICommand.class.getPackage().getName() + "." + commandName;
+            Class<?> commandClass = Class.forName(commandQualifiedName);
+
             Class[] constructorParamTypes = new Class[]{String[].class};
-            Constructor<?> commandConstructor =
-                    commandClass.getConstructor(constructorParamTypes);
+            Constructor<?> commandConstructor = commandClass.getConstructor(constructorParamTypes);
 
             Object[] constructorParams = new Object[]{commandArgs};
             return (ICommand) commandConstructor.newInstance(constructorParams);
         } catch (ClassNotFoundException e) {
-            System.err.println("Unknown command");
+            System.err.printf("Command '%s' not found %n", commandName);
         } catch (Exception e) {
             System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
