@@ -2,6 +2,7 @@ package ist.meic.pa.shell;
 
 import ist.meic.pa.shell.command.ICommand;
 import ist.meic.pa.shell.command.TerminateInspectionException;
+import ist.meic.pa.shell.command.nop;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -46,9 +47,7 @@ public class Shell {
                 String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
                 ICommand command = getCommandForName(commandName, commandArgs);
-                if (command != null) {
-                    command.execute(this);
-                }
+                command.execute(this);
             } catch (TerminateInspectionException e) {
                 break;
             }
@@ -74,7 +73,7 @@ public class Shell {
             e.printStackTrace();
         }
 
-        return null;
+        return new nop();
     }
 
 }
