@@ -10,7 +10,7 @@ public class Inspector {
     public void inspect(Object object) throws IllegalAccessException {
         printClassName(object);
         System.err.println("----------");
-        printFields(object);
+        printFields(object.getClass(), object);
 
         Shell shell = new Shell(object);
         shell.run();
@@ -21,9 +21,12 @@ public class Inspector {
         System.err.printf("%s is an instance of class %s %n", object, className);
     }
 
-    private void printFields(Object object) throws IllegalAccessException {
-        Field[] fields = object.getClass().getDeclaredFields();
+    private void printFields(Class clazz, Object object) throws IllegalAccessException {
+        if (!clazz.getSuperclass().getName().equals("java.lang.Object")) {
+            printFields(object.getClass().getSuperclass(), object);
+        }
 
+        Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
 
