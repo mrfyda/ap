@@ -77,4 +77,16 @@ public class Inspector {
         }
     }
 
+    public void inspectField(String fieldName, Object object) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            Object fieldValue = field.get(object);
+            inspect(fieldValue);
+        } catch (NullPointerException e) {
+            System.err.printf("Field '%s' value is null %n", fieldName);
+        } catch (Exception e) {
+            System.err.printf("Field '%s' not found %n", fieldName);
+        }
+    }
 }
