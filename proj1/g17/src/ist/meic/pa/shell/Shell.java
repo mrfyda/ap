@@ -1,6 +1,7 @@
 package ist.meic.pa.shell;
 
 import ist.meic.pa.shell.command.ICommand;
+import ist.meic.pa.shell.command.TerminateInspectionException;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -36,17 +37,21 @@ public class Shell {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.err.print("> ");
+            try {
+                System.err.print("> ");
 
-            String line = scanner.nextLine();
-            String[] parts = line.split(" ");
+                String line = scanner.nextLine();
+                String[] parts = line.split(" ");
 
-            String commandName = parts[0];
-            String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
+                String commandName = parts[0];
+                String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
-            ICommand command = getCommandForName(commandName, commandArgs);
-            if (command != null) {
-                command.execute(this);
+                ICommand command = getCommandForName(commandName, commandArgs);
+                if (command != null) {
+                    command.execute(this);
+                }
+            } catch (TerminateInspectionException e) {
+                break;
             }
         }
 

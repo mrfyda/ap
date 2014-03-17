@@ -12,8 +12,8 @@ public class q implements ICommand {
         }
     }
 
-    public void execute(Shell shell) {
-        System.exit(0);
+    public void execute(Shell shell) throws TerminateInspectionException {
+        throw new TerminateInspectionException();
     }
 
     public void undo() {
