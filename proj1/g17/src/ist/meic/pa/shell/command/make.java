@@ -1,14 +1,15 @@
 package ist.meic.pa.shell.command;
 
+import ist.meic.pa.Inspector;
 import ist.meic.pa.shell.Shell;
 
-public class g implements ICommand {
+public class make implements ICommand {
 
     private final static Integer NUM_PARAMS = 1;
 
     private String arg;
 
-    public g(String[] args) {
+    public make(String[] args) {
         if (args.length == NUM_PARAMS) {
             this.arg = args[0];
         } else {
@@ -17,12 +18,9 @@ public class g implements ICommand {
     }
 
     public void execute(Shell shell) {
-        Object object = shell.getObject(arg);
+        Inspector inspector = new Inspector();
+        Object object = inspector.getInstance(arg);
         shell.setLatestObject(object);
-    }
-
-    public void undo() {
-
     }
 
 }

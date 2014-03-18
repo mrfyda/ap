@@ -7,7 +7,4 @@ public class nop implements ICommand {
     public void execute(Shell shell) {
     }
 
-    public void undo() {
-    }
-
 }

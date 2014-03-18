@@ -16,8 +16,4 @@ public class q implements ICommand {
         throw new TerminateInspectionException();
     }
 
-    public void undo() {
-
-    }
-
 }

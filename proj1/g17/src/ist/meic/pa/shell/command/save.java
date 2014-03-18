@@ -2,13 +2,13 @@ package ist.meic.pa.shell.command;
 
 import ist.meic.pa.shell.Shell;
 
-public class s implements ICommand {
+public class save implements ICommand {
 
     private final static Integer NUM_PARAMS = 1;
 
     private String arg;
 
-    public s(String[] args) {
+    public save(String[] args) {
         if (args.length == NUM_PARAMS) {
             this.arg = args[0];
         } else {
@@ -21,10 +21,6 @@ public class s implements ICommand {
         shell.putObject(arg, object);
 
         System.err.println("Saved name for object of type: " + object.getClass().getName());
-    }
-
-    public void undo() {
-
     }
 
 }

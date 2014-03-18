@@ -22,8 +22,4 @@ public class i implements ICommand {
         new Inspector().inspectField(fieldName, object);
     }
 
-    public void undo() {
-
-    }
-
 }

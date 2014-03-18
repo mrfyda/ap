@@ -6,6 +6,4 @@ public interface ICommand {
 
     void execute(Shell shell) throws TerminateInspectionException;
 
-    void undo();
-
 }

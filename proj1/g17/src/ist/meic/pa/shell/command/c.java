@@ -29,8 +29,4 @@ public class c implements ICommand {
         inspector.invokeMethod(object, methodName, methodArgs);
     }
 
-    public void undo() {
-
-    }
-
 }
