@@ -4,6 +4,8 @@ import ist.meic.pa.shell.Shell;
 
 public class q implements ICommand {
 
+    private final static String DESCRIPTION = "terminates current shell";
+
     private final static Integer NUM_PARAMS = 0;
 
     public q(String[] args) {

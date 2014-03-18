@@ -4,6 +4,8 @@ import ist.meic.pa.shell.Shell;
 
 public class save implements ICommand {
 
+    private final static String DESCRIPTION = "";
+
     private final static Integer NUM_PARAMS = 1;
 
     private String arg;

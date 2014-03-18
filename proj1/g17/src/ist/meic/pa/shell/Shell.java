@@ -4,10 +4,11 @@ import ist.meic.pa.shell.command.ICommand;
 import ist.meic.pa.shell.command.TerminateInspectionException;
 import ist.meic.pa.shell.command.nop;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class Shell {
     private TreeMap<String, Object> objects = new TreeMap<String, Object>();
@@ -76,6 +77,54 @@ public class Shell {
         return new nop();
     }
 
+    public void printAvailableCommands() {
+        String currentPath = ICommand.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String classesPath = ICommand.class.getPackage().getName().replace(".", "/");
+
+        File[] classFiles = listClassFiles(currentPath + classesPath);
+        List<Class> classes = getClassesFromFiles(classFiles);
+
+        for (Class clazz : classes) {
+            try {
+                Field field = clazz.getDeclaredField("DESCRIPTION");
+                field.setAccessible(true);
+                String description = field.get(null).toString();
+
+                System.err.printf("%s: %s %n", clazz.getSimpleName(), description);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private File[] listClassFiles(String path) {
+        File folder = new File(path);
+        File[] files = folder.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".class");
+            }
+        });
+
+        assert files != null;
+
+        return files;
+    }
+
+    private List<Class> getClassesFromFiles(File[] files) {
+        List<Class> classes = new ArrayList<Class>();
+
+        for (File file : files) {
+            try {
+                String className = file.getName().replaceAll(".class", "");
+                String classQualifiedName = ICommand.class.getPackage().getName() + "." + className;
+
+                Class clazz = Class.forName(classQualifiedName);
+
+                classes.add(clazz);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+
+        return classes;
+    }
+
 }
-
-

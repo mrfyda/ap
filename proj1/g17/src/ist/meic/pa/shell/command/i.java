@@ -5,6 +5,8 @@ import ist.meic.pa.shell.Shell;
 
 public class i implements ICommand {
 
+    private final static String DESCRIPTION = "opens a shell to inspect a field";
+
     private final static Integer NUM_PARAMS = 1;
 
     private String fieldName;
