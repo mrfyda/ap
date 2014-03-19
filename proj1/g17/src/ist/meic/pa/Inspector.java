@@ -8,13 +8,20 @@ import java.lang.reflect.Modifier;
 
 public class Inspector {
 
-    public void inspect(Object object) throws IllegalAccessException {
-        printClassName(object);
-        System.err.println("----------");
-        printFields(object.getClass(), object);
+    public void inspect(Object object) {
+        printObjectInfo(object);
 
         Shell shell = new Shell(object);
         shell.run();
+    }
+
+    public void printObjectInfo(Object object) {
+        try {
+            printClassName(object);
+            System.err.println("----------");
+            printFields(object.getClass(), object);
+        } catch (IllegalAccessException ignored) {
+        }
     }
 
     private void printClassName(Object object) {

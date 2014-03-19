@@ -69,9 +69,10 @@ public class Shell {
             return (ICommand) commandConstructor.newInstance(constructorParams);
         } catch (ClassNotFoundException e) {
             System.err.printf("Command '%s' not found %n", commandName);
+        } catch (NoClassDefFoundError e) {
+            System.err.printf("Command '%s' not found %n", commandName);
         } catch (Exception e) {
-            System.err.println("This is weird, how did you get here?");
-            e.printStackTrace();
+            System.err.println("Incorrect number of arguments");
         }
 
         return new nop();
