@@ -4,7 +4,7 @@ import ist.meic.pa.shell.Shell;
 
 public class load implements ICommand {
 
-    private final static String DESCRIPTION = "";
+    private final static String DESCRIPTION = "loads stored object to current shell";
 
     private final static Integer NUM_PARAMS = 1;
 

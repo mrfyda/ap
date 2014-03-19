@@ -1,13 +1,13 @@
 package ist.meic.pa.shell.command;
 
-import ist.meic.pa.Inspector;
+import ist.meic.pa.ExtraInspector;
 import ist.meic.pa.shell.Shell;
 
 import java.util.Arrays;
 
 public class make implements ICommand {
 
-    private final static String DESCRIPTION = "";
+    private final static String DESCRIPTION = "creates a new instance";
 
     private final static Integer NUM_PARAMS = 0;
 
@@ -25,7 +25,7 @@ public class make implements ICommand {
     }
 
     public void execute(Shell shell) {
-        Inspector inspector = new Inspector();
+        ExtraInspector inspector = new ExtraInspector();
         Object object = inspector.getInstance(shell, className, consArgs);
         shell.setLatestObject(object);
     }

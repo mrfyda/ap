@@ -1,13 +1,13 @@
 package ist.meic.pa.shell.command;
 
-import ist.meic.pa.Inspector;
+import ist.meic.pa.ExtraInspector;
 import ist.meic.pa.shell.Shell;
 
 import java.util.Arrays;
 
 public class call implements ICommand {
 
-    private final static String DESCRIPTION = "";
+    private final static String DESCRIPTION = "calls method with typed arguments";
 
     private final static Integer NUM_PARAMS = 1;
 
@@ -27,7 +27,7 @@ public class call implements ICommand {
     public void execute(Shell shell) {
         Object object = shell.getLatestObject();
 
-        Inspector inspector = new Inspector();
+        ExtraInspector inspector = new ExtraInspector();
         inspector.invokeTypedMethod(shell, object, methodName, methodArgs);
     }
 

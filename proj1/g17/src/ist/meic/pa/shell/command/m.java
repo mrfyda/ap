@@ -1,15 +1,13 @@
 package ist.meic.pa.shell.command;
 
-import java.util.Arrays;
-
 import ist.meic.pa.Inspector;
 import ist.meic.pa.shell.Shell;
 
 public class m implements ICommand {
-	
-	 private final static String DESCRIPTION = "";
-	 
-	 private final static Integer NUM_PARAMS = 2;
+
+    private final static String DESCRIPTION = "modifies field value";
+
+    private final static Integer NUM_PARAMS = 2;
 	 
 	 private String fieldName;
 	 

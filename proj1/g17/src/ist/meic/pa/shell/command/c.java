@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class c implements ICommand {
 
-    private final static String DESCRIPTION = "";
+    private final static String DESCRIPTION = "calls method";
 
     private final static Integer NUM_PARAMS = 1;
 
