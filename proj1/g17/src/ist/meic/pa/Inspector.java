@@ -2,6 +2,7 @@ package ist.meic.pa;
 
 import ist.meic.pa.shell.Shell;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -36,15 +37,27 @@ public class Inspector {
         }
     }
 
-    public Object getInstance(String className) {
+    public Object getInstance(Shell shell, String className, String[] consArgs) {
+        Object instance = null;
+
         try {
-            Object object = Class.forName(className).newInstance();
-            System.out.println("class " + object.getClass().getName());
-            return object;
+            Class<?> commandClass = Class.forName(className);
+
+            Class[] consArgTypes = parseArgTypes(shell, consArgs);
+            Constructor<?> commandConstructor = commandClass.getConstructor(consArgTypes);
+
+            Object[] consArgValues = parseArgVals(shell, consArgs);
+            instance = commandConstructor.newInstance(consArgValues);
+        } catch (ClassNotFoundException e) {
+            System.err.printf("Class '%s' not found %n", className);
+        } catch (NoSuchMethodException e) {
+            System.err.printf("Constructor for class '%s' not found %n", className);
         } catch (Exception e) {
+            System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
-            return null;
         }
+
+        return instance;
     }
 
     private void invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
