@@ -1,11 +1,30 @@
 package ist.meic.pa;
 
 import ist.meic.pa.shell.Shell;
+import ist.meic.pa.shell.command.TerminateInspectionException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 public class ExtraInspector extends Inspector {
+
+    private static Stack<Object> history = new Stack<Object>();
+
+    public void push(Object object) throws TerminateInspectionException {
+        history.push(object);
+        throw new TerminateInspectionException();
+    }
+
+    public void pop() {
+        try {
+            Object object = history.pop();
+            inspect(object);
+        } catch (EmptyStackException e) {
+            System.err.println("Stash is empty");
+        }
+    }
 
     public Object getInstance(Shell shell, String className, String[] consArgs) {
         Object instance = null;
