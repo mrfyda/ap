@@ -105,9 +105,11 @@ public class Inspector {
                 params[i] = Integer.parseInt(methodArgs[i]);
             }
 
-            String output = method.invoke(object, params).toString();
+            Object output = method.invoke(object, params);
 
-            System.err.println(output);
+            if (output != null) {
+                System.err.println(output);
+            }
         } catch (NoSuchMethodException e) {
             System.err.println("Unknown method: " + methodName);
         } catch (NumberFormatException e) {

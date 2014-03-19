@@ -2,7 +2,7 @@ package ist.meic.pa;
 
 import a.B;
 import a.C;
-import a.D;
+import a.Y;
 
 public class App {
 
@@ -13,8 +13,8 @@ public class App {
         C c = new C();
         new Inspector().inspect(c);
 
-        D d = new D();
-        new Inspector().inspect(d);
+        Y y = new Y();
+        new Inspector().inspect(y);
     }
 
 }

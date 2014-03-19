@@ -63,9 +63,11 @@ public class ExtraInspector extends Inspector {
             Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
             method.setAccessible(true);
 
-            String output = method.invoke(object, argValues).toString();
+            Object output = method.invoke(object, argValues);
 
-            System.err.println(output);
+            if (output != null) {
+                System.err.println(output);
+            }
         } catch (NoSuchMethodException e) {
             System.err.println("Unknown method: " + methodName);
         } catch (NumberFormatException e) {
