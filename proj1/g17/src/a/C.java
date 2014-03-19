@@ -7,5 +7,9 @@ public class C extends B {
         return d + h;
     }
 
+    public String r(String a) {
+        return a + "This is a print!";
+    }
+
     public static long i = 10L;
 }

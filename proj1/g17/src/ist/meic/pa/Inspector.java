@@ -54,24 +54,14 @@ public class Inspector {
         }
     }
 
-    public void invokeMethod(Object object, String methodName, String[] methodArgs) {
+    private void invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
+        assert (argTypes.length == argValues.length);
+
         try {
-            Integer argsNumber = methodArgs.length;
-
-            Class[] cArgs = new Class[argsNumber];
-            for (int i = 0; i < cArgs.length; i++) {
-                cArgs[i] = int.class;
-            }
-
-            Method method = object.getClass().getDeclaredMethod(methodName, cArgs);
+            Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
             method.setAccessible(true);
 
-            Object[] params = new Object[argsNumber];
-            for (int i = 0; i < params.length; i++) {
-                params[i] = Integer.parseInt(methodArgs[i]);
-            }
-
-            String output = method.invoke(object, params).toString();
+            String output = method.invoke(object, argValues).toString();
 
             System.err.println(output);
         } catch (NoSuchMethodException e) {
@@ -82,6 +72,36 @@ public class Inspector {
             System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
         }
+    }
+
+    public void invokeMethod(Object object, String methodName, String[] methodArgs) {
+        try {
+            Integer argsNumber = methodArgs.length;
+
+            Class[] argTypes = new Class[argsNumber];
+            for (int i = 0; i < argTypes.length; i++) {
+                argTypes[i] = int.class;
+            }
+
+            Object[] argValues = new Object[argsNumber];
+            for (int i = 0; i < argValues.length; i++) {
+                argValues[i] = Integer.parseInt(methodArgs[i]);
+            }
+
+            invokeByName(object, methodName, argTypes, argValues);
+        } catch (NumberFormatException e) {
+            System.err.println("Parameters must be integers!");
+        } catch (Exception e) {
+            System.err.println("This is weird, how did you get here?");
+            e.printStackTrace();
+        }
+    }
+
+    public void invokeTypedMethod(Shell shell, Object object, String methodName, String[] methodArgs) {
+        Class[] argTypes = parseArgTypes(shell, methodArgs);
+        Object[] argValues = parseArgVals(shell, methodArgs);
+
+        invokeByName(object, methodName, argTypes, argValues);
     }
 
     public void inspectField(String fieldName, Object object) {
@@ -95,5 +115,72 @@ public class Inspector {
         } catch (Exception e) {
             System.err.printf("Field '%s' not found %n", fieldName);
         }
+    }
+
+    private Class<?>[] parseArgTypes(Shell shell, String[] methodArgs) {
+        Integer argsNumber = methodArgs.length;
+        Class[] argTypes = new Class[argsNumber];
+
+        try {
+            for (int i = 0; i < argTypes.length; i++) {
+                String[] argInfo = methodArgs[i].split(":");
+                String argType = argInfo[0];
+                String argValue = argInfo[1];
+
+                argTypes[i] = getTypeByName(shell, argType, argValue);
+            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("Unknown parameter type: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("This is weird, how did you get here?");
+            e.printStackTrace();
+        }
+
+        return argTypes;
+    }
+
+    private Object[] parseArgVals(Shell shell, String[] methodArgs) {
+        Integer argsNumber = methodArgs.length;
+
+        Object[] argValues = new Object[argsNumber];
+        for (int i = 0; i < argValues.length; i++) {
+            String[] argInfo = methodArgs[i].split(":");
+            String argType = argInfo[0];
+            String argValue = argInfo[1];
+
+            if (argType.contains("Integer") || argType.contains("int")) {
+                argValues[i] = Integer.parseInt(argValue);
+            } else if (argType.contains("Float")) {
+                argValues[i] = Float.parseFloat(argValue);
+            } else if (argType.contains("Double")) {
+                argValues[i] = Double.parseDouble(argValue);
+            } else if (argType.equals("type")) {
+                argValues[i] = shell.getObject(argValue);
+            } else {
+                argValues[i] = argValue;
+            }
+        }
+
+        return argValues;
+    }
+
+    private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws ClassNotFoundException {
+        Class<?> argClass = null;
+
+        try {
+            argClass = Class.forName("java.lang." + argType);
+        } catch (ClassNotFoundException ex1) {
+            try {
+                argClass = Class.forName(argType);
+            } catch (ClassNotFoundException ex2) {
+                argClass = shell.getObject(argValue).getClass();
+            }
+        }
+
+        if (argClass == null) {
+            throw new ClassNotFoundException(argType);
+        }
+
+        return argClass;
     }
 }
