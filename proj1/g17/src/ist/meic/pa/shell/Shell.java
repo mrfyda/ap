@@ -37,6 +37,8 @@ public class Shell {
     public void run() {
         Scanner scanner = new Scanner(System.in);
 
+        System.err.println("[New context started]");
+
         while (true) {
             try {
                 System.err.print("> ");
@@ -53,6 +55,8 @@ public class Shell {
                 break;
             }
         }
+
+        System.err.println("[Context terminated]");
 
         //scanner.close();
     }

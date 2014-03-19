@@ -5,6 +5,8 @@ import ist.meic.pa.shell.Shell;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class Inspector {
 
@@ -18,7 +20,7 @@ public class Inspector {
     private void printClassInfo(Object object) {
         printClassName(object);
         System.err.println("----------");
-        printFields(object.getClass(), object);
+        printFields(object);
     }
 
     private void printClassName(Object object) {
@@ -26,15 +28,10 @@ public class Inspector {
         System.err.printf("%s is an instance of class %s %n", object, className);
     }
 
-    private void printFields(Class clazz, Object object) {
-        if (!clazz.getSuperclass().equals(Object.class)) {
-            printFields(object.getClass().getSuperclass(), object);
-        }
+    private void printFields(Object object) {
+        Collection<Field> fields = getAllFields(object).values();
 
-        Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
-
             try {
                 System.err.printf("%s %s %s = %s %n",
                         Modifier.toString(field.getModifiers()), field.getType(), field.getName(), field.get(object));
@@ -43,10 +40,24 @@ public class Inspector {
         }
     }
 
+    private HashMap<String, Field> getAllFields(Object object) {
+        HashMap<String, Field> fields = new HashMap<String, Field>();
+        Class clazz = object.getClass();
+
+        while (!clazz.equals(Object.class)) {
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                fields.put(field.getName(), field);
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return fields;
+    }
+
     public void inspectField(String fieldName, Object object) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Field field = getAllFields(object).get(fieldName);
             Object fieldValue = field.get(object);
 
             if (isPrimitiveType(field.getType())) {
@@ -56,20 +67,19 @@ public class Inspector {
             }
         } catch (NullPointerException e) {
             System.err.printf("Field '%s' value is null %n", fieldName);
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
             System.err.printf("Field '%s' not found %n", fieldName);
         }
     }
 
     public void modifyField(String fieldName, String fieldValue, Object object) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Field field = getAllFields(object).get(fieldName);
 
             field.setInt(object, Integer.parseInt(fieldValue));
 
             printClassInfo(object);
-        } catch (NoSuchFieldException e) {
+        } catch (NullPointerException e) {
             System.err.printf("Field '%s' not found %n", fieldName);
         } catch (NumberFormatException e) {
             System.err.printf("Field value '%s' is not an Integer %n", fieldValue);
