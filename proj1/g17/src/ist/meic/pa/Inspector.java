@@ -30,7 +30,7 @@ public class Inspector {
     }
 
     private void printFields(Class clazz, Object object) throws IllegalAccessException {
-        if (!clazz.getSuperclass().getName().equals("java.lang.Object")) {
+        if (!clazz.getSuperclass().equals(Object.class)) {
             printFields(object.getClass().getSuperclass(), object);
         }
 
@@ -109,12 +109,30 @@ public class Inspector {
             Field field = object.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             Object fieldValue = field.get(object);
-            inspect(fieldValue);
+
+            if (isPrimitiveType(field.getType())) {
+                System.err.println(fieldValue);
+            } else {
+                inspect(fieldValue);
+            }
         } catch (NullPointerException e) {
             System.err.printf("Field '%s' value is null %n", fieldName);
         } catch (Exception e) {
             System.err.printf("Field '%s' not found %n", fieldName);
         }
+    }
+
+    private boolean isPrimitiveType(Class clazz) {
+        return clazz.isPrimitive()
+                || clazz.equals(Boolean.class)
+                || clazz.equals(Integer.class)
+                || clazz.equals(Character.class)
+                || clazz.equals(Byte.class)
+                || clazz.equals(Short.class)
+                || clazz.equals(Double.class)
+                || clazz.equals(Long.class)
+                || clazz.equals(Float.class)
+                || clazz.equals(String.class);
     }
 
     private Class<?>[] parseArgTypes(Shell shell, String[] methodArgs) {
