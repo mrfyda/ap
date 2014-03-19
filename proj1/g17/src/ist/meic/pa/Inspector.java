@@ -8,20 +8,13 @@ import java.lang.reflect.Modifier;
 
 public class Inspector {
 
-    public void inspect(Object object) {
-        printObjectInfo(object);
+    public void inspect(Object object) throws IllegalAccessException {
+        printClassName(object);
+        System.err.println("----------");
+        printFields(object.getClass(), object);
 
         Shell shell = new Shell(object);
         shell.run();
-    }
-
-    public void printObjectInfo(Object object) {
-        try {
-            printClassName(object);
-            System.err.println("----------");
-            printFields(object.getClass(), object);
-        } catch (IllegalAccessException ignored) {
-        }
     }
 
     private void printClassName(Object object) {
@@ -54,14 +47,24 @@ public class Inspector {
         }
     }
 
-    private void invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
-        assert (argTypes.length == argValues.length);
-
+    public void invokeMethod(Object object, String methodName, String[] methodArgs) {
         try {
-            Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
+            Integer argsNumber = methodArgs.length;
+
+            Class[] cArgs = new Class[argsNumber];
+            for (int i = 0; i < cArgs.length; i++) {
+                cArgs[i] = int.class;
+            }
+
+            Method method = object.getClass().getDeclaredMethod(methodName, cArgs);
             method.setAccessible(true);
 
-            String output = method.invoke(object, argValues).toString();
+            Object[] params = new Object[argsNumber];
+            for (int i = 0; i < params.length; i++) {
+                params[i] = Integer.parseInt(methodArgs[i]);
+            }
+
+            String output = method.invoke(object, params).toString();
 
             System.err.println(output);
         } catch (NoSuchMethodException e) {
@@ -72,36 +75,6 @@ public class Inspector {
             System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
         }
-    }
-
-    public void invokeMethod(Object object, String methodName, String[] methodArgs) {
-        try {
-            Integer argsNumber = methodArgs.length;
-
-            Class[] argTypes = new Class[argsNumber];
-            for (int i = 0; i < argTypes.length; i++) {
-                argTypes[i] = int.class;
-            }
-
-            Object[] argValues = new Object[argsNumber];
-            for (int i = 0; i < argValues.length; i++) {
-                argValues[i] = Integer.parseInt(methodArgs[i]);
-            }
-
-            invokeByName(object, methodName, argTypes, argValues);
-        } catch (NumberFormatException e) {
-            System.err.println("Parameters must be integers!");
-        } catch (Exception e) {
-            System.err.println("This is weird, how did you get here?");
-            e.printStackTrace();
-        }
-    }
-
-    public void invokeTypedMethod(Shell shell, Object object, String methodName, String[] methodArgs) {
-        Class[] argTypes = parseArgTypes(shell, methodArgs);
-        Object[] argValues = parseArgVals(shell, methodArgs);
-
-        invokeByName(object, methodName, argTypes, argValues);
     }
 
     public void inspectField(String fieldName, Object object) {
@@ -177,28 +150,18 @@ public class Inspector {
             } else {
                 argValues[i] = argValue;
             }
+
+	public void modifyField(String fieldName, String fieldValue, Object object) {
+		try{
+			Field field = object.getClass().getDeclaredField(fieldName);
+			field.setAccessible(true);
+			field.setInt(object, Integer.parseInt(fieldValue));
+		} catch(NoSuchFieldException e) {
+			 System.err.printf("Field '%s' not found %n", fieldName);
+		} catch(NumberFormatException e) {
+			System.err.printf("Field value '%s' is not an Integer %n", fieldValue);
+		} catch (Exception e) {
+            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName,fieldValue);
         }
-
-        return argValues;
-    }
-
-    private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws ClassNotFoundException {
-        Class<?> argClass = null;
-
-        try {
-            argClass = Class.forName("java.lang." + argType);
-        } catch (ClassNotFoundException ex1) {
-            try {
-                argClass = Class.forName(argType);
-            } catch (ClassNotFoundException ex2) {
-                argClass = shell.getObject(argValue).getClass();
-            }
-        }
-
-        if (argClass == null) {
-            throw new ClassNotFoundException(argType);
-        }
-
-        return argClass;
-    }
+	}
 }
