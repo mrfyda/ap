@@ -47,6 +47,26 @@ public class Inspector {
         }
     }
 
+    private void invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
+        assert (argTypes.length == argValues.length);
+
+        try {
+            Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
+            method.setAccessible(true);
+
+            String output = method.invoke(object, argValues).toString();
+
+            System.err.println(output);
+        } catch (NoSuchMethodException e) {
+            System.err.println("Unknown method: " + methodName);
+        } catch (NumberFormatException e) {
+            System.err.println("Parameters must be integers!!!");
+        } catch (Exception e) {
+            System.err.println("This is weird, how did you get here?");
+            e.printStackTrace();
+        }
+    }
+
     public void invokeMethod(Object object, String methodName, String[] methodArgs) {
         try {
             Integer argsNumber = methodArgs.length;
@@ -75,6 +95,13 @@ public class Inspector {
             System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
         }
+    }
+
+    public void invokeTypedMethod(Shell shell, Object object, String methodName, String[] methodArgs) {
+        Class[] argTypes = parseArgTypes(shell, methodArgs);
+        Object[] argValues = parseArgVals(shell, methodArgs);
+
+        invokeByName(object, methodName, argTypes, argValues);
     }
 
     public void inspectField(String fieldName, Object object) {
@@ -150,18 +177,42 @@ public class Inspector {
             } else {
                 argValues[i] = argValue;
             }
-
-	public void modifyField(String fieldName, String fieldValue, Object object) {
-		try{
-			Field field = object.getClass().getDeclaredField(fieldName);
-			field.setAccessible(true);
-			field.setInt(object, Integer.parseInt(fieldValue));
-		} catch(NoSuchFieldException e) {
-			 System.err.printf("Field '%s' not found %n", fieldName);
-		} catch(NumberFormatException e) {
-			System.err.printf("Field value '%s' is not an Integer %n", fieldValue);
-		} catch (Exception e) {
-            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName,fieldValue);
         }
-	}
+
+        return argValues;
+    }
+
+    private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws ClassNotFoundException {
+        Class<?> argClass = null;
+
+        try {
+            argClass = Class.forName("java.lang." + argType);
+        } catch (ClassNotFoundException ex1) {
+            try {
+                argClass = Class.forName(argType);
+            } catch (ClassNotFoundException ex2) {
+                argClass = shell.getObject(argValue).getClass();
+            }
+        }
+
+        if (argClass == null) {
+            throw new ClassNotFoundException(argType);
+        }
+
+        return argClass;
+    }
+
+    public void modifyField(String fieldName, String fieldValue, Object object) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.setInt(object, Integer.parseInt(fieldValue));
+        } catch (NoSuchFieldException e) {
+            System.err.printf("Field '%s' not found %n", fieldName);
+        } catch (NumberFormatException e) {
+            System.err.printf("Field value '%s' is not an Integer %n", fieldValue);
+        } catch (Exception e) {
+            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName, fieldValue);
+        }
+    }
 }
