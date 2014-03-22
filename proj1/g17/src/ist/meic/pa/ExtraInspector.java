@@ -143,6 +143,7 @@ public class ExtraInspector extends Inspector {
     private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws ClassNotFoundException {
         Class<?> argClass = null;
 
+        /* TODO: accept types like int, boolean, long, float, char, byte... */
         try {
             argClass = Class.forName("java.lang." + argType);
         } catch (ClassNotFoundException ex1) {
