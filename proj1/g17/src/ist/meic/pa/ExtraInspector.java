@@ -4,6 +4,7 @@ import ist.meic.pa.shell.Shell;
 import ist.meic.pa.shell.command.TerminateInspectionException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EmptyStackException;
 import java.util.Stack;
@@ -56,7 +57,9 @@ public class ExtraInspector extends Inspector {
         assert (argTypes.length == argValues.length);
 
         try {
+            System.err.println("method name: " + methodName);
             Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
+            System.err.println("success!");
             method.setAccessible(true);
 
             Object output = method.invoke(object, argValues);
@@ -165,5 +168,28 @@ public class ExtraInspector extends Inspector {
         }
 
         return argClass;
+    }
+
+    public void modifyTypedField(Shell shell, String fieldName, String valueTyped, Object object) {
+        /* TODO: accept the command= modify c String:Hello World :)*/
+        try {
+            String[] fieldInfo = valueTyped.split(":");
+            String fieldTyped = fieldInfo[0];
+            String fieldValue = fieldInfo[1];
+
+            Field field = getAllFields(object).get(fieldName);
+
+            field.set(object, parseArgVal(shell, fieldTyped, fieldValue));
+
+            printClassInfo(object);
+        } catch (NullPointerException e) {
+            System.err.printf("Field '%s' not found %n", fieldName);
+        } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Missing parameter info. usage> type:value");
+        } catch (IllegalArgumentException e) {
+            System.err.printf("Field type:value '%s' is not the same type of '%s' %n", valueTyped, fieldName);
+        } catch (Exception e) {
+            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName, valueTyped);
+        }
     }
 }
