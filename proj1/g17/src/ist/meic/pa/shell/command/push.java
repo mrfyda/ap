@@ -17,7 +17,7 @@ public class push implements ICommand {
 
     public void execute(Shell shell) throws TerminateInspectionException {
         Object object = shell.getLatestObject();
-        new ExtraInspector().push(object);
+        new ExtraInspector().pushHistory(object);
     }
 
 }

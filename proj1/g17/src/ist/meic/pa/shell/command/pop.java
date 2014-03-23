@@ -16,7 +16,7 @@ public class pop implements ICommand {
     }
 
     public void execute(Shell shell) {
-        new ExtraInspector().pop();
+        new ExtraInspector().popHistory();
     }
 
 }

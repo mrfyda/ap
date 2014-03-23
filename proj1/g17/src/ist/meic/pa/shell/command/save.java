@@ -22,7 +22,7 @@ public class save implements ICommand {
         Object object = shell.getLatestObject();
         shell.putObject(arg, object);
 
-        System.err.println("Saved name for object of type: " + object.getClass().getName());
+        System.err.printf("Saved object '%s' as '%s' %n", object, arg);
     }
 
 }

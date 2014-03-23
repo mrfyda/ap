@@ -17,7 +17,7 @@ public class Inspector {
         shell.run();
     }
 
-    private void printClassInfo(Object object) {
+    public void printClassInfo(Object object) {
         printClassName(object);
         System.err.println("----------");
         printFields(object);

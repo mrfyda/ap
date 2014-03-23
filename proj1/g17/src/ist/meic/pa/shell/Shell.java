@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class Shell {
-    private TreeMap<String, Object> objects = new TreeMap<String, Object>();
+    private static TreeMap<String, Object> objects = new TreeMap<String, Object>();
     private Object latestObject;
 
     public Shell(Object object) {
@@ -32,6 +32,12 @@ public class Shell {
 
     public Object getLatestObject() {
         return latestObject;
+    }
+
+    public void printObjectsStatus() {
+        for (Map.Entry<String, Object> entry : objects.entrySet()) {
+            System.err.printf("%s -> %s %n", entry.getKey(), entry.getValue());
+        }
     }
 
     public void run() {

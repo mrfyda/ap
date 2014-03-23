@@ -13,17 +13,32 @@ public class ExtraInspector extends Inspector {
 
     private static Stack<Object> history = new Stack<Object>();
 
-    public void push(Object object) throws TerminateInspectionException {
+    public void pushHistory(Object object) throws TerminateInspectionException {
+        try {
+            if (history.peek().equals(object)) {
+                return;
+            }
+        } catch (EmptyStackException ignored) {
+        }
+
         history.push(object);
         throw new TerminateInspectionException();
     }
 
-    public void pop() {
+    public void popHistory() {
         try {
             Object object = history.pop();
             inspect(object);
         } catch (EmptyStackException e) {
             System.err.println("Stash is empty");
+        }
+    }
+
+    public void printHistoryStatus() {
+        String indentation = "";
+        for (Object object : history) {
+            System.err.printf("%s%s %n", indentation, object);
+            indentation += " ";
         }
     }
 
