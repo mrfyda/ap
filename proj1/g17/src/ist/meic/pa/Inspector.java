@@ -40,7 +40,7 @@ public class Inspector {
         }
     }
 
-    private HashMap<String, Field> getAllFields(Object object) {
+    protected HashMap<String, Field> getAllFields(Object object) {
         HashMap<String, Field> fields = new HashMap<String, Field>();
         Class clazz = object.getClass();
 
