@@ -5,7 +5,7 @@ import ist.meic.pa.shell.Shell;
 
 public class status implements ICommand {
 
-    private final static String DESCRIPTION = "restores stashed context";
+    private final static String DESCRIPTION = "displays the status of current shell and inspector";
 
     private final static Integer NUM_PARAMS = 0;
 
