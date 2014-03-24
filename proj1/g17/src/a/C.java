@@ -8,7 +8,7 @@ public class C extends B {
     }
 
     public String r(String a) {
-        return a + "This is a print!";
+        return a + ", is a string.";
     }
 
     public static long i = 10L;

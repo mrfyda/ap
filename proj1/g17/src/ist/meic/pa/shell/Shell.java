@@ -50,7 +50,7 @@ public class Shell {
                 System.err.print("> ");
 
                 String line = scanner.nextLine();
-                String[] parts = line.split(" ");
+                String[] parts = line.split(" ", 2);
 
                 String commandName = parts[0];
                 String[] commandArgs = Arrays.copyOfRange(parts, 1, parts.length);

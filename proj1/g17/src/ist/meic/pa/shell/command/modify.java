@@ -4,25 +4,18 @@ package ist.meic.pa.shell.command;
 import ist.meic.pa.ExtraInspector;
 import ist.meic.pa.shell.Shell;
 
-import java.util.Arrays;
+public class modify implements ICommand {
 
-public class modify implements ICommand{
-
-    private final static String DESCRIPTION = "modifies a field with the typed value";
-
-    private final static Integer NUM_PARAMS = 2;
+    private final static String DESCRIPTION = "modifies a field with the typed value. modify <name> type:value";
 
     private String fieldName;
 
     private String valueTyped;
 
     public modify(String[] args) {
-        if (args.length >= NUM_PARAMS) {
-            this.fieldName = args[0];
-            this.valueTyped =args[1];
-        } else {
-            throw new IllegalArgumentException();
-        }
+        String[] splitedArgs = args[0].split(" ", 2);
+        this.fieldName = splitedArgs[0];
+        this.valueTyped = splitedArgs[1];
     }
 
     public void execute(Shell shell) {

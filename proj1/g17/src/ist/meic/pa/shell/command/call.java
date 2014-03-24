@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class call implements ICommand {
 
-    private final static String DESCRIPTION = "calls method with typed arguments";
+    private final static String DESCRIPTION = "calls method with typed arguments. call <method> type:value,type:value ...";
 
     private final static Integer NUM_PARAMS = 1;
 
@@ -16,11 +16,13 @@ public class call implements ICommand {
     private String[] methodArgs;
 
     public call(String[] args) {
-        if (args.length >= NUM_PARAMS) {
-            this.methodName = args[0];
-            this.methodArgs = Arrays.copyOfRange(args, 1, args.length);
+        String[] splitedArgs = args[0].split(" ", 2);
+        this.methodName = splitedArgs[0];
+
+        if (splitedArgs.length > 1) {
+            this.methodArgs = splitedArgs[1].split(",");
         } else {
-            throw new IllegalArgumentException();
+            this.methodArgs = new String[0];
         }
     }
 
