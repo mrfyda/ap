@@ -9,8 +9,6 @@ public class make implements ICommand {
 
     private final static String DESCRIPTION = "creates a new instance. make <class> type:value,type:value ...";
 
-    private final static Integer NUM_PARAMS = 0;
-
     private String className;
 
     private String[] consArgs;

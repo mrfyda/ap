@@ -9,8 +9,6 @@ public class call implements ICommand {
 
     private final static String DESCRIPTION = "calls method with typed arguments. call <method> type:value,type:value ...";
 
-    private final static Integer NUM_PARAMS = 1;
-
     private String methodName;
 
     private String[] methodArgs;

@@ -7,9 +7,37 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class ExtraInspector extends Inspector {
+
+    private static final Map<String, Class> typeMap = new HashMap<String, Class>();
+
+    static {
+        /* Simple Types */
+        typeMap.put("int", Integer.TYPE);
+        typeMap.put("long", Long.TYPE);
+        typeMap.put("double", Double.TYPE);
+        typeMap.put("float", Float.TYPE);
+        typeMap.put("bool", Boolean.TYPE);
+        typeMap.put("char", Character.TYPE);
+        typeMap.put("byte", Byte.TYPE);
+        typeMap.put("void", Void.TYPE);
+        typeMap.put("short", Short.TYPE);
+
+        /* Extended Types */
+        typeMap.put("Integer", Integer.class);
+        typeMap.put("Long", Long.class);
+        typeMap.put("Double", Double.class);
+        typeMap.put("Float", Float.class);
+        typeMap.put("Boolean", Boolean.class);
+        typeMap.put("Character", Character.class);
+        typeMap.put("Byte", Byte.class);
+        typeMap.put("Void", Void.class);
+        typeMap.put("Short", Short.class);
+    }
 
     private static Stack<Object> history = new Stack<Object>();
 
@@ -131,25 +159,25 @@ public class ExtraInspector extends Inspector {
     private Object parseArgVal(Shell shell, String strType, String strValue) {
         Object argValue = null;
 
-        if (strType.contains("Integer")) {
+        if (strType.toLowerCase().contains("int")) {
             argValue = Integer.parseInt(strValue);
         } else if (strType.contains("String")) {
             argValue = strValue;
-        } else if (strType.contains("Long")) {
+        } else if (strType.toLowerCase().contains("long")) {
             argValue = Long.parseLong(strValue);
-        } else if (strType.contains("Short")) {
+        } else if (strType.toLowerCase().contains("short")) {
             argValue = Short.parseShort(strValue);
-        } else if (strType.contains("Boolean")) {
+        } else if (strType.toLowerCase().contains("boolean")) {
             argValue = Boolean.parseBoolean(strValue);
-        } else if (strType.contains("Float")) {
+        } else if (strType.toLowerCase().contains("float")) {
             argValue = Float.parseFloat(strValue);
-        } else if (strType.contains("Double")) {
+        } else if (strType.toLowerCase().contains("double")) {
             argValue = Double.parseDouble(strValue);
-        } else if (strType.contains("Character")) {
+        } else if (strType.toLowerCase().contains("char")) {
             argValue = strValue.charAt(0);
-        } else if (strType.contains("Byte")) {
+        } else if (strType.toLowerCase().contains("byte")) {
             argValue = Byte.parseByte(strValue);
-        } else if (strType.contains("Object")) {
+        } else if (strType.toLowerCase().contains("obj")) {
             argValue = shell.getObject(strValue);
         } else {
             argValue = strType;
@@ -158,53 +186,46 @@ public class ExtraInspector extends Inspector {
         return argValue;
     }
 
-    private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws ClassNotFoundException {
+    private Class<?> getTypeByName(Shell shell, String argType, String argValue) throws IllegalArgumentException, ClassNotFoundException {
         Class<?> argClass = null;
 
-        /* TODO: accept types like int, boolean, long, float, char, byte... */
-        try {
-            argClass = Class.forName("java.lang." + argType);
-        } catch (ClassNotFoundException ex1) {
+        if (!argType.toLowerCase().contains("obj")) {
+            /* Check for well known types */
+            argClass = typeMap.get(argType);
 
-            try {
+            if (argClass == null) {
+                /* Check for other java classes */
                 argClass = Class.forName(argType);
-            } catch (ClassNotFoundException ex2) {
-                Object obj = shell.getObject(argValue);
-
-                if (obj != null) {
-                    argClass = obj.getClass();
-                }
-
             }
-        }
+        } else {
+            /* Check for stored objects */
+            Object obj = shell.getObject(argValue);
 
-        if (argClass == null) {
-            throw new ClassNotFoundException(argType);
+            if (obj != null) {
+                argClass = obj.getClass();
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
 
         return argClass;
     }
 
-    public void modifyTypedField(Shell shell, String fieldName, String valueTyped, Object object) {
-        /* TODO: accept the command= modify c String:Hello World :)*/
+    public void modifyTypedField(Shell shell, String fieldName, String fieldValue, Object object) {
         try {
-            String[] fieldInfo = valueTyped.split(":");
-            String fieldTyped = fieldInfo[0];
-            String fieldValue = fieldInfo[1];
-
             Field field = getAllFields(object).get(fieldName);
 
-            field.set(object, parseArgVal(shell, fieldTyped, fieldValue));
+            field.set(object, parseArgVal(shell, field.getType().getName(), fieldValue));
 
             printClassInfo(object);
         } catch (NullPointerException e) {
             System.err.printf("Field '%s' not found %n", fieldName);
         } catch (ArrayIndexOutOfBoundsException e) {
-                System.err.println("Missing parameter info. usage> type:value");
+            System.err.println("Missing parameter info. usage> type:value");
         } catch (IllegalArgumentException e) {
-            System.err.printf("Field type:value '%s' is not the same type of '%s' %n", valueTyped, fieldName);
+            System.err.printf("Field '%s' is not the same type of '%s' %n", fieldValue, fieldName);
         } catch (Exception e) {
-            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName, valueTyped);
+            System.err.printf("Operation error with Field '%s' and value '%s' %n", fieldName, fieldValue);
         }
     }
 }

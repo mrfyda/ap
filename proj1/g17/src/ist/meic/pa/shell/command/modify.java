@@ -10,18 +10,18 @@ public class modify implements ICommand {
 
     private String fieldName;
 
-    private String valueTyped;
+    private String fieldValue;
 
     public modify(String[] args) {
         String[] splitedArgs = args[0].split(" ", 2);
         this.fieldName = splitedArgs[0];
-        this.valueTyped = splitedArgs[1];
+        this.fieldValue = splitedArgs[1];
     }
 
     public void execute(Shell shell) {
         Object object = shell.getLatestObject();
 
         ExtraInspector inspector = new ExtraInspector();
-        inspector.modifyTypedField(shell, fieldName, valueTyped, object);
+        inspector.modifyTypedField(shell, fieldName, fieldValue, object);
     }
 }
