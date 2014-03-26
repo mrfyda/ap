@@ -5,8 +5,9 @@ import ist.meic.pa.shell.Shell;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Inspector {
 
@@ -29,12 +30,14 @@ public class Inspector {
     }
 
     private void printFields(Object object) {
-        Collection<Field> fields = getAllFields(object).values();
+        Set<Map.Entry<String, Field>> entries = getAllFields(object).entrySet();
 
-        for (Field field : fields) {
+        for (Map.Entry<String, Field> entry : entries) {
+            Field field = entry.getValue();
+
             try {
                 System.err.printf("%s %s %s = %s %n",
-                        Modifier.toString(field.getModifiers()), field.getType(), field.getName(), field.get(object));
+                        Modifier.toString(field.getModifiers()), field.getType(), entry.getKey(), field.get(object));
             } catch (IllegalAccessException ignored) {
             }
         }
@@ -47,7 +50,13 @@ public class Inspector {
         while (!clazz.equals(Object.class)) {
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                fields.put(field.getName(), field);
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    if (clazz != object.getClass()) {
+                        fields.put(clazz.getSimpleName() + "." + field.getName(), field);
+                    } else {
+                        fields.put(field.getName(), field);
+                    }
+                }
             }
             clazz = clazz.getSuperclass();
         }
@@ -99,6 +108,10 @@ public class Inspector {
 
             Method method = object.getClass().getDeclaredMethod(methodName, cArgs);
             method.setAccessible(true);
+
+            if (Modifier.isStatic(method.getModifiers())) {
+                throw new NoSuchMethodException();
+            }
 
             Object[] params = new Object[argsNumber];
             for (int i = 0; i < params.length; i++) {

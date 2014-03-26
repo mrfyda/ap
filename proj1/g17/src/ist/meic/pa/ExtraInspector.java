@@ -6,6 +6,7 @@ import ist.meic.pa.shell.command.TerminateInspectionException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,6 +105,10 @@ public class ExtraInspector extends Inspector {
             Method method = object.getClass().getDeclaredMethod(methodName, argTypes);
             System.err.println("success!");
             method.setAccessible(true);
+
+            if (Modifier.isStatic(method.getModifiers())) {
+                throw new NoSuchMethodException();
+            }
 
             Object output = method.invoke(object, argValues);
 
