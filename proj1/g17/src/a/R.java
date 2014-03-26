@@ -10,4 +10,12 @@ public class R {
         return "The int is " + a;
     }
 
+    public String f(boolean a) {
+        return "The bool is " + a;
+    }
+
+    public String F(Byte a) {
+        return "The byte is " + a;
+    }
+
 }

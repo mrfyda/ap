@@ -1,42 +1,54 @@
 package ist.meic.pa;
 
 import ist.meic.pa.shell.Shell;
-import ist.meic.pa.shell.command.TerminateInspectionException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.EmptyStackException;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 public class ArgumentHelper extends Inspector {
 
-    private static final Map<String, Class> typeMap = new HashMap<String, Class>();
+    private static final Map<String, Class> primitiveTypes = new HashMap<String, Class>();
 
     static {
-        /* Simple Types */
-        typeMap.put("int", Integer.TYPE);
-        typeMap.put("long", Long.TYPE);
-        typeMap.put("double", Double.TYPE);
-        typeMap.put("float", Float.TYPE);
-        typeMap.put("bool", Boolean.TYPE);
-        typeMap.put("char", Character.TYPE);
-        typeMap.put("byte", Byte.TYPE);
-        typeMap.put("void", Void.TYPE);
-        typeMap.put("short", Short.TYPE);
+        primitiveTypes.put("Integer", Integer.TYPE);
+        primitiveTypes.put("int", Integer.TYPE);
+        primitiveTypes.put("Long", Long.TYPE);
+        primitiveTypes.put("long", Long.TYPE);
+        primitiveTypes.put("Double", Double.TYPE);
+        primitiveTypes.put("double", Double.TYPE);
+        primitiveTypes.put("Float", Float.TYPE);
+        primitiveTypes.put("float", Float.TYPE);
+        primitiveTypes.put("Boolean", Boolean.TYPE);
+        primitiveTypes.put("bool", Boolean.TYPE);
+        primitiveTypes.put("Byte", Byte.TYPE);
+        primitiveTypes.put("byte", Byte.TYPE);
+        primitiveTypes.put("Short", Short.TYPE);
+        primitiveTypes.put("short", Short.TYPE);
+        primitiveTypes.put("String", String.class);
+        primitiveTypes.put("str", String.class);
+    }
 
-        /* Extended Types */
-        typeMap.put("Integer", Integer.class);
-        typeMap.put("Long", Long.class);
-        typeMap.put("Double", Double.class);
-        typeMap.put("Float", Float.class);
-        typeMap.put("Boolean", Boolean.class);
-        typeMap.put("Character", Character.class);
-        typeMap.put("Byte", Byte.class);
-        typeMap.put("Void", Void.class);
-        typeMap.put("Short", Short.class);
+    private static final Map<String, Class> realTypes = new HashMap<String, Class>();
+
+    static {
+        realTypes.put("Integer", Integer.class);
+        realTypes.put("int", Integer.TYPE);
+        realTypes.put("Long", Long.class);
+        realTypes.put("long", Long.TYPE);
+        realTypes.put("Double", Double.class);
+        realTypes.put("double", Double.TYPE);
+        realTypes.put("Float", Float.class);
+        realTypes.put("float", Float.TYPE);
+        realTypes.put("Boolean", Boolean.class);
+        realTypes.put("bool", Boolean.TYPE);
+        realTypes.put("Byte", Byte.class);
+        realTypes.put("byte", Byte.TYPE);
+        realTypes.put("Short", Short.class);
+        realTypes.put("short", Short.TYPE);
+        realTypes.put("String", String.class);
+        realTypes.put("str", String.class);
     }
 
     public void prepareArgs(Shell shell, String[] args, Class<?>[] types, Object[] values) {
@@ -69,25 +81,12 @@ public class ArgumentHelper extends Inspector {
     public Object parseArgVal(Shell shell, String strType, String strValue) {
         Object argValue = null;
 
-        if (strType.toLowerCase().contains("int")) {
-            argValue = Integer.parseInt(strValue);
-        } else if (strType.contains("String")) {
-            argValue = strValue;
-        } else if (strType.toLowerCase().contains("long")) {
-            argValue = Long.parseLong(strValue);
-        } else if (strType.toLowerCase().contains("short")) {
-            argValue = Short.parseShort(strValue);
-        } else if (strType.toLowerCase().contains("boolean")) {
-            argValue = Boolean.parseBoolean(strValue);
-        } else if (strType.toLowerCase().contains("float")) {
-            argValue = Float.parseFloat(strValue);
-        } else if (strType.toLowerCase().contains("double")) {
-            argValue = Double.parseDouble(strValue);
-        } else if (strType.toLowerCase().contains("char")) {
-            argValue = strValue.charAt(0);
-        } else if (strType.toLowerCase().contains("byte")) {
-            argValue = Byte.parseByte(strValue);
-        } else if (strType.toLowerCase().contains("obj")) {
+        if (!strType.toLowerCase().contains("obj")) {
+            Class primitiveType = primitiveTypes.get(strType);
+            PropertyEditor editor = PropertyEditorManager.findEditor(primitiveType);
+            editor.setAsText(strValue);
+            argValue = editor.getValue();
+        } else {
             argValue = shell.getObject(strValue);
         }
 
@@ -99,12 +98,7 @@ public class ArgumentHelper extends Inspector {
 
         if (!argType.toLowerCase().contains("obj")) {
             /* Check for well known types */
-            argClass = typeMap.get(argType);
-
-            if (argClass == null) {
-                /* Check for other java classes */
-                argClass = Class.forName(argType);
-            }
+            argClass = realTypes.get(argType);
         } else {
             /* Check for stored objects */
             Object obj = shell.getObject(argValue);
