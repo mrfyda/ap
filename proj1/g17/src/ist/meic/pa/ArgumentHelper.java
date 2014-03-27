@@ -11,6 +11,8 @@ public class ArgumentHelper extends Inspector {
 
     private static final Map<String, Class> primitiveTypes = new HashMap<String, Class>();
 
+    private static final Map<String, Class> realTypes = new HashMap<String, Class>();
+
     static {
         primitiveTypes.put("Integer", Integer.TYPE);
         primitiveTypes.put("int", Integer.TYPE);
@@ -28,11 +30,7 @@ public class ArgumentHelper extends Inspector {
         primitiveTypes.put("short", Short.TYPE);
         primitiveTypes.put("String", String.class);
         primitiveTypes.put("str", String.class);
-    }
 
-    private static final Map<String, Class> realTypes = new HashMap<String, Class>();
-
-    static {
         realTypes.put("Integer", Integer.class);
         realTypes.put("int", Integer.TYPE);
         realTypes.put("Long", Long.class);

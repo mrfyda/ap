@@ -18,4 +18,8 @@ public class R {
         return "The byte is " + a;
     }
 
+    public String F(String a) {
+        return "The String is " + a;
+    }
+
 }
