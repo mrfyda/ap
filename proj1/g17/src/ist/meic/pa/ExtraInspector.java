@@ -71,7 +71,7 @@ public class ExtraInspector extends Inspector {
         return instance;
     }
 
-    private void invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
+    private Object invokeByName(Object object, String methodName, Class<?>[] argTypes, Object[] argValues) {
         assert (argTypes.length == argValues.length);
 
         try {
@@ -89,6 +89,8 @@ public class ExtraInspector extends Inspector {
             if (output != null) {
                 System.err.println(output);
             }
+
+            return output;
         } catch (NoSuchMethodException e) {
             System.err.println("Unknown method: " + methodName);
         } catch (NumberFormatException e) {
@@ -97,6 +99,8 @@ public class ExtraInspector extends Inspector {
             System.err.println("This is weird, how did you get here?");
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public void invokeTypedMethod(Shell shell, Object object, String methodName, String[] methodArgs) {
@@ -105,7 +109,11 @@ public class ExtraInspector extends Inspector {
         Object[] argValues = new Object[argNumber];
         argHelper.prepareArgs(shell, methodArgs, argTypes, argValues);
 
-        invokeByName(object, methodName, argTypes, argValues);
+        Object result = invokeByName(object, methodName, argTypes, argValues);
+
+        if(result != null) {
+            shell.setLatestObject(result);
+        }
     }
 
     public void modifyTypedField(Shell shell, String fieldName, String fieldValue, Object object) {
