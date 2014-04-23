@@ -15,7 +15,6 @@
 log/
 target/
 
-proj1/g17/out/
-proj1/g17/build/
+build/
 *.jar
 out/
