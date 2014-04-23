@@ -2,30 +2,30 @@ package a;
 
 import ist.meic.pa.Trace;
 
-class TestAux0 {
+class TestAux1 {
 
     public Object foo() {
         return new String("Foo");
     }
 
     public Object bar() {
-        return new String("Bar");
+        return foo();
     }
 
-    public Object identity(Object o) {
-        return o;
+    public Object baz() {
+        return bar();
     }
 
     public void test() {
         Trace.print(foo());
-        Object b = bar();
-        Trace.print(identity(b));
+        Trace.print(bar());
+        Trace.print(baz());
     }
 }
 
-public class Test0 {
+public class Test1 {
 
     public static void main(String args[]) {
-        (new TestAux0()).test();
+        (new TestAux1()).test();
     }
 }
