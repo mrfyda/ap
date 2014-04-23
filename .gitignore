@@ -17,4 +17,6 @@ target/
 
 build/
 *.jar
+!javassist.jar
+!javassist-src.jar
 out/
