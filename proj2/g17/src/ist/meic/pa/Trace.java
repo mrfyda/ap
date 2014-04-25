@@ -3,7 +3,9 @@ package ist.meic.pa;
 public class Trace {
 
     public static void print(Object object) {
-        // TODO: do something here
+        System.out.println("Tracing for " + object);
+
+        System.out.println(TraceHistory.traceSteps.get(object));
     }
 
 }

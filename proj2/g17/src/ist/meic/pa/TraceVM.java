@@ -10,9 +10,10 @@ public class TraceVM {
             System.exit(1);
         }
 
-        Translator translator = new TracerTranslator();
+        Translator translator = new TraceTranslator();
         ClassPool pool = ClassPool.getDefault();
         Loader classLoader = new Loader();
+        //classLoader.doDelegation = false;
 
         try {
             classLoader.addTranslator(pool, translator);

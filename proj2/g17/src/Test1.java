@@ -1,5 +1,3 @@
-package a;
-
 import ist.meic.pa.Trace;
 
 class TestAux1 {
