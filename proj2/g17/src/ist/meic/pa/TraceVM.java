@@ -1,6 +1,9 @@
 package ist.meic.pa;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.NotFoundException;
+import javassist.Translator;
 
 public class TraceVM {
 
@@ -13,7 +16,7 @@ public class TraceVM {
         Translator translator = new TraceTranslator();
         ClassPool pool = ClassPool.getDefault();
         Loader classLoader = new Loader();
-        //classLoader.doDelegation = false;
+//        classLoader.doDelegation = false;
 
         try {
             classLoader.addTranslator(pool, translator);

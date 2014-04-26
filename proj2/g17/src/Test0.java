@@ -2,12 +2,10 @@ import ist.meic.pa.Trace;
 
 class TestAux0 {
 
-    public Object foo() {
-        return new MyString("Foo");
-    }
+    public Object foo() { return new String("Foo"); }
 
     public Object bar() {
-        return new MyString("Bar");
+        return new String("Bar");
     }
 
     public Object identity(Object o) {
@@ -21,20 +19,7 @@ class TestAux0 {
     }
 }
 
-class MyString {
-    String string;
-
-    public MyString(String string) {
-        this.string = new String(string);
-    }
-
-    public String toString() {
-        return string;
-    }
-}
-
 public class Test0 {
-
     public static void main(String args[]) {
         (new TestAux0()).test();
     }
