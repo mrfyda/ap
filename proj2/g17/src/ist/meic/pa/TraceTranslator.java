@@ -1,6 +1,12 @@
 package ist.meic.pa;
 
 import javassist.*;
+import javassist.bytecode.MethodInfo;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
+
+import java.util.List;
 
 public class TraceTranslator implements Translator {
 
@@ -12,30 +18,40 @@ public class TraceTranslator implements Translator {
     public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
         CtClass clazz = pool.get(classname);
 
-        if (clazz.getPackageName() != null && (
-                clazz.getName().equals("ist.meic.pa.TraceHistory") ||
-                        clazz.getName().equals("ist.meic.pa.TraceStep"))) return;
+        onMethodCall(clazz);
+    }
 
-        CtConstructor[] constructors = clazz.getDeclaredConstructors();
+    private void onMethodCall(CtClass clazz) throws CannotCompileException {
+        clazz.instrument(new ExprEditor() {
+            public void edit(MethodCall methodCall) throws CannotCompileException {
+                try {
+                    CtMethod method = methodCall.getMethod();
 
-        for (CtConstructor constructor : constructors) {
-            constructor.insertAfter(
-                    String.format("{" +
-                            "StackTraceElement ste = Thread.currentThread().getStackTrace()[2];" +
-                            "ist.meic.pa.TraceHistory.putRTL($0, ste.getFileName(), \"%s\", ste.getLineNumber());" +
-                            "}", constructor.getLongName())
-            );
-        }
+                    if (!method.getName().equals("main")) {
+                        MethodInfo methodInfo = method.getMethodInfo();
+                        List attributes = methodInfo.getAttributes();
+                        TraceHistory.putLTR(attributes.toArray(), methodCall.getFileName(), method.getLongName(), methodCall.getLineNumber());
+                    }
+                } catch (NotFoundException e) {
+                    System.out.println("Method " + methodCall.getMethodName() + " was not found!");
+                }
+            }
 
-        CtMethod[] methods = clazz.getDeclaredMethods();
+            public void edit(NewExpr constructorCall) throws CannotCompileException {
+                try {
+                    CtConstructor constructor = constructorCall.getConstructor();
 
-        for (CtMethod method : methods) {
-            method.insertBefore(
-                    String.format("{" +
-                            "StackTraceElement ste = Thread.currentThread().getStackTrace()[2];" +
-                            "ist.meic.pa.TraceHistory.putLTR($args, ste.getFileName(), \"%s\", ste.getLineNumber());" +
-                            "}", method.getLongName())
-            );
-        }
+                    MethodInfo methodInfo = constructor.getMethodInfo();
+                    List attributes = methodInfo.getAttributes();
+                    TraceHistory.putRTL(attributes.toArray()[0], constructorCall.getFileName(), constructor.getLongName(), constructorCall.getLineNumber());
+
+                    System.out.println("Constructor " + constructor.getLongName() + " was successfully executed, in file " + constructorCall.getFileName() + " at line " + constructorCall.getLineNumber());
+                    System.out.println("Value " + attributes.toArray()[0]);
+
+                } catch (NotFoundException e) {
+                    System.out.println("Constructor " + constructorCall.getClassName() + " was not found!");
+                }
+            }
+        });
     }
 }
