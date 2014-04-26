@@ -20,7 +20,7 @@
     <target name="compile" depends="init"
             description="compile the source">
 
-        <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false" debug="true">
             <classpath refid="class.path"/>
         </javac>
     </target>
@@ -38,8 +38,12 @@
     <target name="run" depends="dist"
             description="run example usage">
 
-        <java jar="tracer.jar" fork="true">
-            <classpath refid="class.path"/>
+        <java classname="ist.meic.pa.TraceVM">
+            <arg value="Test0"/>
+            <classpath>
+                <pathelement location="lib/javassist.jar"/>
+                <pathelement location="tracer.jar"/>
+            </classpath>
         </java>
     </target>
 
