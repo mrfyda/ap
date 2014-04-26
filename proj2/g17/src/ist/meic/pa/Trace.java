@@ -11,7 +11,10 @@ public class Trace {
             System.out.println("Tracing for " + object + "is nonexistent!");
         } else {
             System.out.println("Tracing for " + object);
-            System.out.println(steps);
+
+            for (TraceStep step : steps) {
+                System.out.println(step);
+            }
         }
     }
 
