@@ -1,11 +1,18 @@
 package ist.meic.pa;
 
+import java.util.List;
+
 public class Trace {
 
     public static void print(Object object) {
-        System.out.println("Tracing for " + object);
+        List<TraceStep> steps = TraceHistory.traceSteps.get(object);
 
-        System.out.println(TraceHistory.traceSteps.get(object));
+        if (steps == null) {
+            System.out.println("Tracing for " + object + "is nonexistent!");
+        } else {
+            System.out.println("Tracing for " + object);
+            System.out.println(steps);
+        }
     }
 
 }

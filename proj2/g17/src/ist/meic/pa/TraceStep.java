@@ -1,11 +1,13 @@
 package ist.meic.pa;
 
 public class TraceStep {
-    public String file;
-    public String method;
-    public Integer line;
+    private String direction;
+    private String method;
+    private String file;
+    private Integer line;
 
-    public TraceStep(String file, String method, Integer line) {
+    public TraceStep(String direction, String method, String file, Integer line) {
+        this.direction = direction;
         this.file = file;
         this.method = method;
         this.line = line;
@@ -13,6 +15,6 @@ public class TraceStep {
 
     @Override
     public String toString() {
-        return method + " on " + file + ":" + line;
+        return String.format("  %s %s on %s:%d", direction, method, file, line);
     }
 }

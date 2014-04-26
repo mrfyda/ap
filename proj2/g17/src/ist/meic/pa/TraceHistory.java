@@ -15,7 +15,7 @@ public class TraceHistory {
             steps = new ArrayList<TraceStep>();
         }
 
-        TraceStep step = new TraceStep(file, method, line);
+        TraceStep step = new TraceStep("<-", method, file, line);
         steps.add(step);
         traceSteps.put(object, steps);
     }
