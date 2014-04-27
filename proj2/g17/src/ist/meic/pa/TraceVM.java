@@ -1,22 +1,18 @@
 package ist.meic.pa;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.NotFoundException;
-import javassist.Translator;
+import javassist.*;
 
 public class TraceVM {
 
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.err.println("usage: ist.meic.pa.TraceVM <target application class name> [<target application arguments>]");
+            System.err.println("usage: ist.meic.pa.TraceVM <target application class> [<target application arguments>]");
             System.exit(1);
         }
 
         Translator translator = new TraceTranslator();
         ClassPool pool = ClassPool.getDefault();
         Loader classLoader = new Loader();
-//        classLoader.doDelegation = false;
 
         try {
             classLoader.addTranslator(pool, translator);
