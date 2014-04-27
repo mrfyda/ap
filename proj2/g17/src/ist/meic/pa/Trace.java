@@ -8,7 +8,7 @@ public class Trace {
         List<TraceStep> steps = TraceHistory.traceSteps.get(object);
 
         if (steps == null) {
-            System.out.println("Tracing for " + object + "is nonexistent!");
+            System.out.println("Tracing for " + object + " is nonexistent!");
         } else {
             System.out.println("Tracing for " + object);
 

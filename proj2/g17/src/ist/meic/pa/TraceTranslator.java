@@ -1,6 +1,9 @@
 package ist.meic.pa;
 
 import javassist.*;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
 
 public class TraceTranslator implements Translator {
 
@@ -12,30 +15,46 @@ public class TraceTranslator implements Translator {
     public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
         CtClass clazz = pool.get(classname);
 
-        if (clazz.getPackageName() != null && (
-                clazz.getName().equals("ist.meic.pa.TraceHistory") ||
-                        clazz.getName().equals("ist.meic.pa.TraceStep"))) return;
+        if (clazz.getSimpleName().equals("TraceHistory")) return;
 
-        CtConstructor[] constructors = clazz.getDeclaredConstructors();
+        clazz.instrument(new TraceExprEditor());
+    }
+}
 
-        for (CtConstructor constructor : constructors) {
-            constructor.insertAfter(
+class TraceExprEditor extends ExprEditor {
+
+    public void edit(MethodCall methodCall) throws CannotCompileException {
+        try {
+            CtMethod method = methodCall.getMethod();
+
+            methodCall.replace(
                     String.format("{" +
-                            "StackTraceElement ste = Thread.currentThread().getStackTrace()[2];" +
-                            "ist.meic.pa.TraceHistory.putRTL($0, ste.getFileName(), \"%s\", ste.getLineNumber());" +
-                            "}", constructor.getLongName())
+                            "$_ = $proceed($$);" +
+                            "String filename = \"%s\";" +
+                            "String method = \"%s\";" +
+                            "int line = %d;" +
+                            "ist.meic.pa.TraceHistory.putLTR($args, filename, method, line);" +
+                            "ist.meic.pa.TraceHistory.putRTL(($w)$_, filename, method, line);" +
+                            "}", methodCall.getFileName(), method.getLongName(), methodCall.getLineNumber())
             );
-        }
-
-        CtMethod[] methods = clazz.getDeclaredMethods();
-
-        for (CtMethod method : methods) {
-            method.insertBefore(
-                    String.format("{" +
-                            "StackTraceElement ste = Thread.currentThread().getStackTrace()[2];" +
-                            "ist.meic.pa.TraceHistory.putLTR($args, ste.getFileName(), \"%s\", ste.getLineNumber());" +
-                            "}", method.getLongName())
-            );
+        } catch (NotFoundException ignored) {
         }
     }
+
+    public void edit(NewExpr newExpr) throws CannotCompileException {
+        try {
+            CtConstructor constructor = newExpr.getConstructor();
+
+            newExpr.replace(
+                    String.format("{" +
+                            "$_ = $proceed($$);" +
+                            "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
+                            "ist.meic.pa.TraceHistory.putRTL($_, \"%s\", \"%s\", %d);" +
+                            "}" +
+                            "}", newExpr.getFileName(), constructor.getLongName(), newExpr.getLineNumber())
+            );
+        } catch (NotFoundException ignored) {
+        }
+    }
+
 }
