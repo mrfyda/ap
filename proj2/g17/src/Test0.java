@@ -2,7 +2,9 @@ import ist.meic.pa.Trace;
 
 class TestAux0 {
 
-    public Object foo() { return new String("Foo"); }
+    public Object foo() {
+        return new String("Foo");
+    }
 
     public Object bar() {
         return new String("Bar");
