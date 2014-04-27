@@ -29,4 +29,42 @@ public class TraceHistory {
         steps.add(step);
         traceSteps.put(object, steps);
     }
+
+    public static void reset(Object object) {
+        List<TraceStep> steps = new ArrayList<TraceStep>();
+        traceSteps.put(object, steps);
+    }
+
+    public static void printTraceSteps(Object object) {
+        List<TraceStep> steps = TraceHistory.traceSteps.get(object);
+
+        if (steps == null) {
+            System.out.println("Tracing for " + object + " is nonexistent!");
+        } else {
+            System.out.println("Tracing for " + object);
+
+            for (TraceStep step : steps) {
+                System.out.println(step);
+            }
+        }
+    }
+}
+
+class TraceStep {
+    private String direction;
+    private String method;
+    private String file;
+    private Integer line;
+
+    public TraceStep(String direction, String method, String file, Integer line) {
+        this.direction = direction;
+        this.file = file;
+        this.method = method;
+        this.line = line;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("  %s %s on %s:%d", direction, method, file, line);
+    }
 }

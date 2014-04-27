@@ -15,7 +15,10 @@ public class TraceTranslator implements Translator {
     public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
         CtClass clazz = pool.get(classname);
 
-        if (clazz.getSimpleName().equals("TraceHistory")) return;
+        String currentPackage = clazz.getPackageName();
+        String tracePackage = this.getClass().getPackage().getName();
+        if (currentPackage != null && currentPackage.startsWith(tracePackage))
+            return;
 
         clazz.instrument(new TraceExprEditor());
     }
@@ -29,11 +32,11 @@ class TraceExprEditor extends ExprEditor {
 
             methodCall.replace(
                     String.format("{" +
-                            "$_ = $proceed($$);" +
                             "String filename = \"%s\";" +
                             "String method = \"%s\";" +
                             "int line = %d;" +
                             "ist.meic.pa.TraceHistory.putLTR($args, filename, method, line);" +
+                            "$_ = $proceed($$);" +
                             "ist.meic.pa.TraceHistory.putRTL(($w)$_, filename, method, line);" +
                             "}", methodCall.getFileName(), method.getLongName(), methodCall.getLineNumber())
             );
@@ -49,6 +52,7 @@ class TraceExprEditor extends ExprEditor {
                     String.format("{" +
                             "$_ = $proceed($$);" +
                             "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
+                            "ist.meic.pa.TraceHistory.reset($_);" +
                             "ist.meic.pa.TraceHistory.putRTL($_, \"%s\", \"%s\", %d);" +
                             "}" +
                             "}", newExpr.getFileName(), constructor.getLongName(), newExpr.getLineNumber())
