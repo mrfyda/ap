@@ -52,7 +52,6 @@ class TraceExprEditor extends ExprEditor {
                     String.format("{" +
                             "$_ = $proceed($$);" +
                             "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
-                            "ist.meic.pa.TraceHistory.reset($_);" +
                             "ist.meic.pa.TraceHistory.putRTL($_, \"%s\", \"%s\", %d);" +
                             "}" +
                             "}", newExpr.getFileName(), constructor.getLongName(), newExpr.getLineNumber())

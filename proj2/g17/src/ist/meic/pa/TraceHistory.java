@@ -1,12 +1,12 @@
 package ist.meic.pa;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 public class TraceHistory {
 
-    public static HashMap<Object, List<TraceStep>> traceSteps = new HashMap<Object, List<TraceStep>>();
+    public static IdentityHashMap<Object, List<TraceStep>> traceSteps = new IdentityHashMap<Object, List<TraceStep>>();
 
     public static void putLTR(Object[] objects, String file, String method, int line) {
         for (Object object : objects) {
@@ -27,11 +27,6 @@ public class TraceHistory {
 
         TraceStep step = new TraceStep(direction, method, file, line);
         steps.add(step);
-        traceSteps.put(object, steps);
-    }
-
-    public static void reset(Object object) {
-        List<TraceStep> steps = new ArrayList<TraceStep>();
         traceSteps.put(object, steps);
     }
 
