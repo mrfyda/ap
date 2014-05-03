@@ -1,10 +1,7 @@
 package ist.meic.pa;
 
 import javassist.*;
-import javassist.expr.Cast;
-import javassist.expr.ExprEditor;
-import javassist.expr.FieldAccess;
-import javassist.expr.Handler;
+import javassist.expr.*;
 
 public class TraceTranslatorExtended implements Translator {
 
@@ -79,6 +76,23 @@ class TraceExprEditorExtended extends ExprEditor {
                             "ist.meic.pa.TraceHistory.putCast($_, \"%s\", \"%s\", %d);" +
                             "}" +
                             "}", cast.getFileName(), clazz.getName(), cast.getLineNumber())
+            );
+        } catch (NotFoundException ignored) {
+        }
+    }
+
+    public void edit(Instanceof instanceOf) throws CannotCompileException {
+        try {
+            CtClass clazz = instanceOf.getType();
+
+            instanceOf.replace(
+                    String.format("{" +
+                            "$_ = $proceed($$);" +
+                            "String filename = \"%s\";" +
+                            "String method = \"%s\";" +
+                            "int line = %d;" +
+                            "ist.meic.pa.TraceHistory.putInstanceOf($1, filename, method, line);" +
+                            "}", instanceOf.getFileName(), clazz.getName(), instanceOf.getLineNumber())
             );
         } catch (NotFoundException ignored) {
         }

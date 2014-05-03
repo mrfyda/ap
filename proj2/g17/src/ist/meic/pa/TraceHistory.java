@@ -34,6 +34,10 @@ public class TraceHistory {
         put(object, "Cast to", file, className, line);
     }
 
+    public static void putInstanceOf(Object object, String file, String className, int line) {
+        put(object, "Checked instance of", file, className, line);
+    }
+
     private static void put(Object object, String direction, String file, String method, int line) {
         List<TraceStep> steps = traceSteps.get(object);
 
