@@ -18,6 +18,22 @@ public class TraceHistory {
         put(object, "<-", file, method, line);
     }
 
+    public static void putFieldWrite(Object object, String file, String fieldName, int line) {
+        put(object, "Wrote ", file, fieldName, line);
+    }
+
+    public static void putFieldRead(Object object, String file, String fieldName, int line) {
+        put(object, "Read ", file, fieldName, line);
+    }
+
+    public static void putHandler(Object object, String file, String exceptioName, int line) {
+        put(object, "Catched ", file, exceptioName, line);
+    }
+
+    public static void putCast(Object object, String file, String className, int line) {
+        put(object, "Cast to", file, className, line);
+    }
+
     private static void put(Object object, String direction, String file, String method, int line) {
         List<TraceStep> steps = traceSteps.get(object);
 

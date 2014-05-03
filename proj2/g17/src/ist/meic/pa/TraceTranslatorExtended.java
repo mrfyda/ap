@@ -1,6 +1,7 @@
 package ist.meic.pa;
 
 import javassist.*;
+import javassist.expr.Cast;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 import javassist.expr.Handler;
@@ -35,7 +36,7 @@ class TraceExprEditorExtended extends ExprEditor {
                         String.format("{" +
                                 "$_ = $proceed($$);" +
                                 "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
-                                "ist.meic.pa.TraceHistory.putRTL($_, \"%s\", \"%s\", %d);" +
+                                "ist.meic.pa.TraceHistory.putFieldRead($_, \"%s\", \"%s\", %d);" +
                                 "}" +
                                 "}", fieldAccess.getFileName(), field.getName(), fieldAccess.getLineNumber())
                 );
@@ -46,7 +47,7 @@ class TraceExprEditorExtended extends ExprEditor {
                                 "String filename = \"%s\";" +
                                 "String method = \"%s\";" +
                                 "int line = %d;" +
-                                "ist.meic.pa.TraceHistory.putLTR($args, filename, method, line);" +
+                                "ist.meic.pa.TraceHistory.putFieldWrite($1, filename, method, line);" +
                                 "}", fieldAccess.getFileName(), field.getName(), fieldAccess.getLineNumber())
                 );
             }
@@ -60,8 +61,24 @@ class TraceExprEditorExtended extends ExprEditor {
 
             exceptionHandler.insertBefore(
                     String.format("{" +
-                            "ist.meic.pa.TraceHistory.putRTL($1, \"%s\", \"%s\", %d);" +
+                            "ist.meic.pa.TraceHistory.putHandler($1, \"%s\", \"%s\", %d);" +
                             "}", exceptionHandler.getFileName(), exception.getName(), exceptionHandler.getLineNumber())
+            );
+        } catch (NotFoundException ignored) {
+        }
+    }
+
+    public void edit(Cast cast) throws CannotCompileException {
+        try {
+            CtClass clazz = cast.getType();
+
+            cast.replace(
+                    String.format("{" +
+                            "$_ = $proceed($$);" +
+                            "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
+                            "ist.meic.pa.TraceHistory.putCast($_, \"%s\", \"%s\", %d);" +
+                            "}" +
+                            "}", cast.getFileName(), clazz.getName(), cast.getLineNumber())
             );
         } catch (NotFoundException ignored) {
         }
