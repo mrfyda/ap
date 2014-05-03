@@ -38,6 +38,10 @@ public class TraceHistory {
         put(object, "Checked instance of", file, className, line);
     }
 
+    public static void putNewArray(Object object, String file, String className, int line) {
+        put(object, "New array of ", file, className, line);
+    }
+
     private static void put(Object object, String direction, String file, String method, int line) {
         List<TraceStep> steps = traceSteps.get(object);
 

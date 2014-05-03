@@ -98,4 +98,20 @@ class TraceExprEditorExtended extends ExprEditor {
         }
     }
 
+    public void edit(NewArray newArray) throws CannotCompileException {
+        try {
+            CtClass clazz = newArray.getComponentType();
+
+            newArray.replace(
+                    String.format("{" +
+                            "$_ = $proceed($$);" +
+                            "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
+                            "ist.meic.pa.TraceHistory.putNewArray($_, \"%s\", \"%s\", %d);" +
+                            "}" +
+                            "}", newArray.getFileName(), clazz.getName(), newArray.getLineNumber())
+            );
+        } catch (NotFoundException ignored) {
+        }
+    }
+
 }
