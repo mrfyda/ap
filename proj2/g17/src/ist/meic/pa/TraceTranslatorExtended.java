@@ -3,6 +3,7 @@ package ist.meic.pa;
 import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
+import javassist.expr.Handler;
 
 public class TraceTranslatorExtended implements Translator {
 
@@ -49,6 +50,19 @@ class TraceExprEditorExtended extends ExprEditor {
                                 "}", fieldAccess.getFileName(), field.getName(), fieldAccess.getLineNumber())
                 );
             }
+        } catch (NotFoundException ignored) {
+        }
+    }
+
+    public void edit(Handler exceptionHandler) throws CannotCompileException {
+        try {
+            CtClass exception = exceptionHandler.getType();
+
+            exceptionHandler.insertBefore(
+                    String.format("{" +
+                            "ist.meic.pa.TraceHistory.putRTL($1, \"%s\", \"%s\", %d);" +
+                            "}", exceptionHandler.getFileName(), exception.getName(), exceptionHandler.getLineNumber())
+            );
         } catch (NotFoundException ignored) {
         }
     }
