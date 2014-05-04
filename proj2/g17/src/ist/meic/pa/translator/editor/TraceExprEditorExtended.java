@@ -1,28 +1,12 @@
-package ist.meic.pa;
+package ist.meic.pa.translator.editor;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.NotFoundException;
 import javassist.expr.*;
 
-public class TraceTranslatorExtended implements Translator {
-
-    @Override
-    public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
-    }
-
-    @Override
-    public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
-        CtClass clazz = pool.get(classname);
-
-        String currentPackage = clazz.getPackageName();
-        String tracePackage = this.getClass().getPackage().getName();
-        if (currentPackage != null && currentPackage.startsWith(tracePackage))
-            return;
-
-        clazz.instrument(new TraceExprEditorExtended());
-    }
-}
-
-class TraceExprEditorExtended extends ExprEditor {
+public class TraceExprEditorExtended extends TraceExprEditor {
 
     public void edit(FieldAccess fieldAccess) throws CannotCompileException {
         try {
@@ -41,10 +25,7 @@ class TraceExprEditorExtended extends ExprEditor {
                 fieldAccess.replace(
                         String.format("{" +
                                 "$_ = $proceed($$);" +
-                                "String filename = \"%s\";" +
-                                "String method = \"%s\";" +
-                                "int line = %d;" +
-                                "ist.meic.pa.TraceHistory.putFieldWrite($1, filename, method, line);" +
+                                "ist.meic.pa.TraceHistory.putFieldWrite($1, \"%s\", \"%s\", %d);" +
                                 "}", fieldAccess.getFileName(), field.getName(), fieldAccess.getLineNumber())
                 );
             }
@@ -88,10 +69,7 @@ class TraceExprEditorExtended extends ExprEditor {
             instanceOf.replace(
                     String.format("{" +
                             "$_ = $proceed($$);" +
-                            "String filename = \"%s\";" +
-                            "String method = \"%s\";" +
-                            "int line = %d;" +
-                            "ist.meic.pa.TraceHistory.putInstanceOf($1, filename, method, line);" +
+                            "ist.meic.pa.TraceHistory.putInstanceOf($1, \"%s\", \"%s\", %d);" +
                             "}", instanceOf.getFileName(), clazz.getName(), instanceOf.getLineNumber())
             );
         } catch (NotFoundException ignored) {

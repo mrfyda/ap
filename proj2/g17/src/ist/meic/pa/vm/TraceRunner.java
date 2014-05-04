@@ -1,22 +1,23 @@
-package ist.meic.pa;
+package ist.meic.pa.vm;
 
-import javassist.*;
+import ist.meic.pa.translator.TraceTranslator;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.Loader;
+import javassist.NotFoundException;
+import javassist.expr.ExprEditor;
 
-public class TraceMain {
+public class TraceRunner {
 
-    private Translator translator;
+    private ExprEditor exprEditor;
 
-    public TraceMain() {
-        this.translator = new TraceTranslator();
-    }
-
-    public TraceMain(Translator translator) {
-        this.translator = translator;
+    public TraceRunner(ExprEditor exprEditor) {
+        this.exprEditor = exprEditor;
     }
 
     public void run(String[] args) {
         if (args.length < 1) {
-            System.err.println("usage: ist.meic.pa.TraceVM <target application class> [<target application arguments>]");
+            System.err.println("missing target application class");
             System.exit(1);
         }
 
@@ -24,7 +25,7 @@ public class TraceMain {
         Loader classLoader = new Loader();
 
         try {
-            classLoader.addTranslator(pool, this.translator);
+            classLoader.addTranslator(pool, new TraceTranslator(this.exprEditor));
         } catch (NotFoundException e) {
             e.printStackTrace();
         } catch (CannotCompileException e) {
