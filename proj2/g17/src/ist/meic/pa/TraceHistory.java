@@ -18,7 +18,7 @@ public class TraceHistory {
         put(object, "<-", file, method, line);
     }
 
-    public static void put(Object object, String direction, String file, String method, int line) {
+    private static void put(Object object, String direction, String file, String method, int line) {
         List<TraceStep> steps = traceSteps.get(object);
 
         if (steps == null) {
