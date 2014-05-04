@@ -1,30 +1,14 @@
-package ist.meic.pa;
+package ist.meic.pa.translator.editor;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.CtConstructor;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import javassist.expr.NewExpr;
 
-public class TraceTranslator implements Translator {
-
-    @Override
-    public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
-    }
-
-    @Override
-    public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
-        CtClass clazz = pool.get(classname);
-
-        String currentPackage = clazz.getPackageName();
-        String tracePackage = this.getClass().getPackage().getName();
-        if (currentPackage != null && currentPackage.startsWith(tracePackage))
-            return;
-
-        clazz.instrument(new TraceExprEditor());
-    }
-}
-
-class TraceExprEditor extends ExprEditor {
+public class TraceExprEditor extends ExprEditor {
 
     public void edit(MethodCall methodCall) throws CannotCompileException {
         try {

@@ -1,35 +1,13 @@
 package ist.meic.pa;
 
-import javassist.*;
+import ist.meic.pa.translator.editor.TraceExprEditor;
+import ist.meic.pa.vm.TraceRunner;
 
 public class TraceVM {
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.err.println("usage: ist.meic.pa.TraceVM <target application class> [<target application arguments>]");
-            System.exit(1);
-        }
-
-        Translator translator = new TraceTranslator();
-        ClassPool pool = ClassPool.getDefault();
-        Loader classLoader = new Loader();
-
-        try {
-            classLoader.addTranslator(pool, translator);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            String[] restArgs = new String[args.length - 1];
-            System.arraycopy(args, 1, restArgs, 0, restArgs.length);
-
-            classLoader.run(args[0], restArgs);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        TraceRunner traceRunner = new TraceRunner(new TraceExprEditor());
+        traceRunner.run(args);
     }
 
 }
