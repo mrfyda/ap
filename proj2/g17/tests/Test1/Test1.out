@@ -1,0 +1,15 @@
+Tracing for Foo
+  <- java.lang.String(java.lang.String) on Test1.java:6
+  <- Test.foo() on Test1.java:18
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test1.java:18
+Tracing for Foo
+  <- java.lang.String(java.lang.String) on Test1.java:6
+  <- Test.foo() on Test1.java:10
+  <- Test.bar() on Test1.java:19
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test1.java:19
+Tracing for Foo
+  <- java.lang.String(java.lang.String) on Test1.java:6
+  <- Test.foo() on Test1.java:10
+  <- Test.bar() on Test1.java:14
+  <- Test.baz() on Test1.java:20
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test1.java:20
