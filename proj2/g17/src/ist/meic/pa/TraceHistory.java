@@ -43,15 +43,17 @@ public class TraceHistory {
     }
 
     private static void put(Object object, String direction, String file, String method, int line) {
-        List<TraceStep> steps = traceSteps.get(object);
+        if (object != null) {
+            List<TraceStep> steps = traceSteps.get(object);
 
-        if (steps == null) {
-            steps = new ArrayList<TraceStep>();
+            if (steps == null) {
+                steps = new ArrayList<TraceStep>();
+            }
+
+            TraceStep step = new TraceStep(direction, method, file, line);
+            steps.add(step);
+            traceSteps.put(object, steps);
         }
-
-        TraceStep step = new TraceStep(direction, method, file, line);
-        steps.add(step);
-        traceSteps.put(object, steps);
     }
 
     public static void printTraceSteps(Object object) {
