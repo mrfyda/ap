@@ -16,9 +16,7 @@ public class TraceExprEditorExtended extends TraceExprEditor {
                 fieldAccess.replace(
                         String.format("{" +
                                 "$_ = $proceed($$);" +
-                                "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
                                 "ist.meic.pa.TraceHistory.putFieldRead($_, \"%s\", \"%s\", %d);" +
-                                "}" +
                                 "}", fieldAccess.getFileName(), field.getName(), fieldAccess.getLineNumber())
                 );
             } else if (fieldAccess.isWriter()) {
@@ -53,9 +51,7 @@ public class TraceExprEditorExtended extends TraceExprEditor {
             cast.replace(
                     String.format("{" +
                             "$_ = $proceed($$);" +
-                            "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
                             "ist.meic.pa.TraceHistory.putCast($_, \"%s\", \"%s\", %d);" +
-                            "}" +
                             "}", cast.getFileName(), clazz.getName(), cast.getLineNumber())
             );
         } catch (NotFoundException ignored) {
@@ -83,9 +79,7 @@ public class TraceExprEditorExtended extends TraceExprEditor {
             newArray.replace(
                     String.format("{" +
                             "$_ = $proceed($$);" +
-                            "if ($_ != null && $_.toString().length() > 0 && $_.toString() != \"{}\") {" +
                             "ist.meic.pa.TraceHistory.putNewArray($_, \"%s\", \"%s\", %d);" +
-                            "}" +
                             "}", newArray.getFileName(), clazz.getName(), newArray.getLineNumber())
             );
         } catch (NotFoundException ignored) {
