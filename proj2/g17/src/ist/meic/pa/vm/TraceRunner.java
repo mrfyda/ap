@@ -1,5 +1,7 @@
 package ist.meic.pa.vm;
 
+import ist.meic.pa.Trace;
+import ist.meic.pa.TraceHistory;
 import ist.meic.pa.translator.TraceTranslator;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -23,6 +25,9 @@ public class TraceRunner {
 
         ClassPool pool = ClassPool.getDefault();
         Loader classLoader = new Loader();
+
+        classLoader.delegateLoadingOf(TraceHistory.class.getName());
+        classLoader.delegateLoadingOf(Trace.class.getName());
 
         try {
             classLoader.addTranslator(pool, new TraceTranslator(this.exprEditor));

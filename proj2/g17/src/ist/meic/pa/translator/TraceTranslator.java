@@ -19,11 +19,6 @@ public class TraceTranslator implements Translator {
     public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
         CtClass clazz = pool.get(classname);
 
-        String currentPackage = clazz.getPackageName();
-        String tracePackage = this.getClass().getPackage().getName();
-        if (currentPackage != null && tracePackage.startsWith(currentPackage))
-            return;
-
         clazz.instrument(exprEditor);
     }
 }
