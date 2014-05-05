@@ -58,12 +58,12 @@ public class TraceHistory {
         List<TraceStep> steps = TraceHistory.traceSteps.get(object);
 
         if (steps == null) {
-            System.out.println("Tracing for " + object + " is nonexistent!");
+            System.err.println("Tracing for " + object + " is nonexistent!");
         } else {
-            System.out.println("Tracing for " + object);
+            System.err.println("Tracing for " + object);
 
             for (TraceStep step : steps) {
-                System.out.println(step);
+                System.err.println(step);
             }
         }
     }
