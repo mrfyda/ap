@@ -26,8 +26,8 @@ public class TraceHistory {
         put(object, "Read", file, fieldName, line);
     }
 
-    public static void putHandler(Object object, String file, String exceptioName, int line) {
-        put(object, "Catched", file, exceptioName, line);
+    public static void putHandler(Object object, String file, String exceptionName, int line) {
+        put(object, "Caught", file, exceptionName, line);
     }
 
     public static void putCast(Object object, String file, String className, int line) {
