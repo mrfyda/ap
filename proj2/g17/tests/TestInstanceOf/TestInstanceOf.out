@@ -1,0 +1,4 @@
+Tracing for Foo
+  <- java.lang.String(java.lang.String) on TestInstanceOf.java:5
+  <- TestInstanceOfAux.foo() on TestInstanceOf.java:8
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestInstanceOf.java:12

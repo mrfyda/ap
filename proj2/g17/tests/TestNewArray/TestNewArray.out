@@ -1,0 +1,4 @@
+Tracing for [Ljava.lang.String;@f0f11b8
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestNewArray.java:9
+Tracing for [Ljava.lang.String;@26544ec1
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestNewArray.java:10
