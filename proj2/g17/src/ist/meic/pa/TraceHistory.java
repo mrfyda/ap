@@ -1,12 +1,13 @@
 package ist.meic.pa;
 
+import ist.meic.pa.map.WeakIdentityHashMap;
+
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 public class TraceHistory {
 
-    public static IdentityHashMap<Object, List<TraceStep>> traceSteps = new IdentityHashMap<Object, List<TraceStep>>();
+    public static WeakIdentityHashMap<Object, List<TraceStep>> traceSteps = new WeakIdentityHashMap<Object, List<TraceStep>>();
 
     public static void putLTR(Object[] objects, String file, String method, int line) {
         for (Object object : objects) {
