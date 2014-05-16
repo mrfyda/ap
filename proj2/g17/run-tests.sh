@@ -14,8 +14,8 @@ for TRACE in $(ls tests); do
     for TEST in $(ls tests/$TRACE); do
         echo "Executing $TEST ...";
 
-        cp tests/$TRACE/$TEST/$TEST.java workdir/;
-        cp tests/$TRACE/$TEST/$TEST.out workdir/;
+        cp -f tests/$TRACE/$TEST/$TEST.java workdir/;
+        cp -f tests/$TRACE/$TEST/$TEST.out workdir/;
         cd workdir;
 
         javac -cp .:javassist.jar:tracer.jar $TEST.java > /dev/null 2>&1;
@@ -23,7 +23,7 @@ for TRACE in $(ls tests); do
         java -cp .:javassist.jar:tracer.jar ist.meic.pa.$TRACE $TEST >& $TEST.created;
 
         DIFF=$(diff $TEST.out $TEST.created);
-        if [ -n "$DIFF" ]; then
+        if [ "$DIFF" != "" ]; then
             echo "[FAILED] $TEST";
         else
             echo "[OK] $TEST";
