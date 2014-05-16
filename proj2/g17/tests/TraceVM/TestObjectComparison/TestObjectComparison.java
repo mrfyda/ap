@@ -3,7 +3,7 @@ import ist.meic.pa.Trace;
 import java.util.HashMap;
 import java.util.Map;
 
-class TestAux3 {
+class TestObjectComparisonAux {
 
     Map m = new HashMap();
 
@@ -32,8 +32,8 @@ class TestAux3 {
     }
 }
 
-public class Test3 {
+public class TestObjectComparison {
     public static void main(String args[]) {
-        (new TestAux3()).test();
+        (new TestObjectComparisonAux()).test();
     }
 }

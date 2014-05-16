@@ -1,0 +1,6 @@
+Tracing for [Ljava.lang.String;@68fe748f
+  New array of java.lang.String on TestNewArray.java:6
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestNewArray.java:9
+Tracing for [Ljava.lang.String;@19968e23
+  New array of java.lang.String on TestNewArray.java:7
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestNewArray.java:10

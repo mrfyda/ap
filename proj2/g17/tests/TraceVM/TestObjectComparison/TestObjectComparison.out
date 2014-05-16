@@ -1,0 +1,21 @@
+Tracing for MyObj
+  <- java.lang.String(java.lang.String) on TestObjectComparison.java:15
+  -> TestObjectComparisonAux.identity(java.lang.Object) on TestObjectComparison.java:17
+  <- TestObjectComparisonAux.identity(java.lang.Object) on TestObjectComparison.java:17
+  -> java.util.Map.put(java.lang.Object,java.lang.Object) on TestObjectComparison.java:18
+  <- java.util.Map.get(java.lang.Object) on TestObjectComparison.java:19
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestObjectComparison.java:21
+MyObj
+Tracing for MyObj
+  <- java.lang.String(java.lang.String) on TestObjectComparison.java:15
+  -> TestObjectComparisonAux.identity(java.lang.Object) on TestObjectComparison.java:17
+  <- TestObjectComparisonAux.identity(java.lang.Object) on TestObjectComparison.java:17
+  -> java.util.Map.put(java.lang.Object,java.lang.Object) on TestObjectComparison.java:18
+  <- java.util.Map.get(java.lang.Object) on TestObjectComparison.java:19
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestObjectComparison.java:21
+  <- java.util.Iterator.next() on TestObjectComparison.java:25
+  -> java.io.PrintStream.println(java.lang.Object) on TestObjectComparison.java:26
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestObjectComparison.java:29
+Tracing for MyObj
+  <- java.lang.String(java.lang.String) on TestObjectComparison.java:23
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestObjectComparison.java:30

@@ -1,0 +1,7 @@
+Tracing for java.lang.NullPointerException
+  <- java.lang.NullPointerException() on TestExceptionHandling.java:5
+  Wrote exception on TestExceptionHandling.java:5
+  Read exception on TestExceptionHandling.java:8
+  Caught java.lang.Exception on TestExceptionHandling.java:14
+  Read exception on TestExceptionHandling.java:17
+  -> ist.meic.pa.Trace.print(java.lang.Object) on TestExceptionHandling.java:17

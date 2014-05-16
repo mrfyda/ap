@@ -1,3 +1,0 @@
-Tracing for java.lang.NullPointerException
-  <- java.lang.NullPointerException() on TestExceptionHandling.java:5
-  -> ist.meic.pa.Trace.print(java.lang.Object) on TestExceptionHandling.java:17

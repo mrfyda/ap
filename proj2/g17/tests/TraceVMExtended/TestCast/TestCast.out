@@ -1,4 +1,5 @@
 Tracing for Foo
   <- java.lang.String(java.lang.String) on TestCast.java:6
   <- TestCastAux.foo() on TestCast.java:10
+  Cast to java.lang.String on TestCast.java:12
   -> ist.meic.pa.Trace.print(java.lang.Object) on TestCast.java:14

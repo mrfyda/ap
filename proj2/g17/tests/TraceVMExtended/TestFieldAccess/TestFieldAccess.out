@@ -1,4 +1,6 @@
 Tracing for Foo
   <- java.lang.String(java.lang.String) on TestFieldAccess.java:9
   <- TestFieldAccessAux.foo() on TestFieldAccess.java:14
+  Wrote object on TestFieldAccess.java:14
+  Read object on TestFieldAccess.java:16
   -> ist.meic.pa.Trace.print(java.lang.Object) on TestFieldAccess.java:16
